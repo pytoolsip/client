@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-12-17 22:27:40
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:46:33
+# @Last Modified time: 2019-03-14 17:59:31
 import sys;
 import os;
 import wx;
@@ -42,7 +42,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, _retTuple = None, *argList, _retTuple = None, **argDict):
-	# 	print(obj.className_);
+	# 	_GG("Log").i(obj.className_);
 	# 	pass;
 
 	def verifydDepends(self, depends = []):
