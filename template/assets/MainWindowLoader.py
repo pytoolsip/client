@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:36:44
+# @Last Modified time: 2019-03-14 18:57:22
 
 import wx;
 from _Global import _GG;
@@ -14,7 +14,7 @@ class MainWindowLoader(object):
 	def __init__(self):
 		super(MainWindowLoader, self).__init__();
 		self.className_ = MainWindowLoader.__name__;
-		self.curPath = os.path.dirname(os.path.realpath(__file__));
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.MainApp = wx.App();
 		self.toolWinSizeEventDict = {}; # 窗口大小事件字典
 		self.registerEvent(); # 注册事件
@@ -144,4 +144,4 @@ class MainWindowLoader(object):
 		self.createMainView();
 
 	def createMainView(self):
-		self.MainViewCtr = CreateCtr(self.curPath + "/tool/MainView", self.MainWindowUI);
+		self.MainViewCtr = CreateCtr(self._curPath + "/tool/MainView", self.MainWindowUI);

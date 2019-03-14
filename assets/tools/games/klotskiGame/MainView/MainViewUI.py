@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-08 21:02:23
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-23 14:25:31
+# @Last Modified time: 2019-03-14 19:00:49
 
 import wx;
 import time;
@@ -16,8 +16,8 @@ class MainViewUI(wx.ScrolledWindow):
 		self.initParams(params);
 		super(MainViewUI, self).__init__(parent, id, size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = MainViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.bindEvents(); # 绑定事件
 		self.SetBackgroundColour(self.__params["bgColour"]);
 		# 初始化滚动条参数
@@ -48,7 +48,7 @@ class MainViewUI(wx.ScrolledWindow):
 			self.__params["size"] = (self.__params["size"][0], self.__params["size"][1]);
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def bindEvents(self):
 		_GG("WindowObject").BindEventToToolWinSize(self, self.onToolWinSize);
@@ -136,9 +136,9 @@ class MainViewUI(wx.ScrolledWindow):
 		self.getCtr().getUIByKey("TimingViewCtr").startTimer();
 
 	def createContentViews(self, parent):
-		self.getCtr().createCtrByKey("KlotskiViewCtr", GetPathByRelativePath("../view/KlotskiView", self.curPath), parent = parent); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("KlotskiViewCtr", GetPathByRelativePath("../view/KlotskiView", self._curPath), parent = parent); # , parent = self, params = {}
 		klotskiViewSize = self.getCtr().getUIByKey("KlotskiViewCtr").GetSize();
-		self.getCtr().createCtrByKey("TimingViewCtr", GetPathByRelativePath("../view/TimingView", self.curPath), parent = parent, params = {"size" : (klotskiViewSize.x, -1)}); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("TimingViewCtr", GetPathByRelativePath("../view/TimingView", self._curPath), parent = parent, params = {"size" : (klotskiViewSize.x, -1)}); # , parent = self, params = {}
 
 	def setGameOverCallback(self):
 		self.getCtr().getUIByKey("KlotskiViewCtr").onGameOver = self.onGameOver;

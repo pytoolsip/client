@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-22 09:09:43
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-13 23:02:51
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:52
 
 import wx;
 import math;
@@ -17,8 +17,8 @@ class TimingViewUI(wx.Panel):
 		self.initParams(params);
 		super(TimingViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = TimingViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.__startTime = None;
 		self.tryStopTimer = False;
 		self.createTimer(); # 创建定时器
@@ -45,14 +45,14 @@ class TimingViewUI(wx.Panel):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***View"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		self.createTimingText();
 		pass;
 		

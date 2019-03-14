@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:36:34
+# @Last Modified time: 2019-03-14 19:01:53
 
 import wx;
 
@@ -14,11 +14,11 @@ class LauncherWindowUI(wx.Frame):
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(LauncherWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style);
 		self.className_ = LauncherWindowUI.__name__;
-		self.curPath = curPath;
-		self.windowCtr = windowCtr;
+		self._curPath = curPath;
+		self.__windowCtr = windowCtr;
 
 	def getCtr(self):
-		return self.windowCtr;
+		return self.__windowCtr;
 
 	def initWindow(self):
 		self.createViewCtrs();

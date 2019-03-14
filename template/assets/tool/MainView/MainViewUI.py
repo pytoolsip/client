@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-08 21:02:23
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 16:50:26
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:53
 
 import wx;
 
@@ -15,8 +15,8 @@ class MainViewUI(wx.ScrolledWindow):
 		self.initParams(params);
 		super(MainViewUI, self).__init__(parent, id, size = self.__params["size"]);
 		self.className_ = MainViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.bindEvents(); # 绑定事件
 		self.SetBackgroundColour(self.__params["bgColour"]);
 		# 初始化滚动条参数
@@ -44,7 +44,7 @@ class MainViewUI(wx.ScrolledWindow):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def bindEvents(self):
 		_GG("WindowObject").BindEventToToolWinSize(self, self.onToolWinSize);
@@ -58,7 +58,7 @@ class MainViewUI(wx.ScrolledWindow):
 		self.resetScrollbars(); # 重置滚动条
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***View"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		self.createTestCtrl();
 		pass;
 		

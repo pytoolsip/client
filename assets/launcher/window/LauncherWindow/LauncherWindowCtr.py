@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:36:21
+# @Last Modified time: 2019-03-14 19:04:02
 
 import wx;
 import threading;
@@ -23,7 +23,7 @@ class LauncherWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(LauncherWindowCtr, self).__init__();
 		self.className_ = LauncherWindowCtr.__name__;
-		self.curPath = _GG("g_AssetsPath") + "launcher/LauncherWindow/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -54,12 +54,12 @@ class LauncherWindowCtr(object):
 		windowTitle = _GG("AppConfig")["AppTitle"];
 		windowSize = (640,420); # _GG("AppConfig")["AppSize"];
 		windowStyle = wx.DEFAULT_FRAME_STYLE^(wx.MINIMIZE_BOX|wx.MAXIMIZE_BOX|wx.RESIZE_BORDER|wx.SYSTEM_MENU);
-		self.UI = LauncherWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self.curPath, windowCtr = self);
-		self.UI.SetBackgroundColour(wx.Colour(250,250,250));
-		self.UI.initWindow();
+		self.__ui = LauncherWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
+		self.__ui.SetBackgroundColour(wx.Colour(250,250,250));
+		self.__ui.initWindow();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 		
 	"""
 		key : 索引所创建控制类的key值
@@ -92,7 +92,7 @@ class LauncherWindowCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 			
 	def updateWindow(self, data):
-		self.UI.updateWindow(data);
+		self.__ui.updateWindow(data);
 
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self.getUI(), {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
