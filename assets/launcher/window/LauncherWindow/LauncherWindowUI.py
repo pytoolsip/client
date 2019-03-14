@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-18 23:04:01
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:36:34
 
 import wx;
 
@@ -28,7 +28,7 @@ class LauncherWindowUI(wx.Frame):
 		pass;
 
 	def createViewCtrs(self):
-		self.getCtr().createCtrByKey("LauncherGaugeView", _GG("g_AssetsPath") + "launcher\\view\\LauncherGaugeView", params = {"size" : (self.GetSize()[0], -1)}); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("LauncherGaugeView", _GG("g_AssetsPath") + "launcher/view/LauncherGaugeView", params = {"size" : (self.GetSize()[0], -1)}); # , parent = self, params = {}
 		self.createTitle();
 		self.createReverifyButton();
 		self.createDetailTextCtrl();

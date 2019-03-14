@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-09 21:32:27
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-06 22:45:46
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:41:46
 
 import os;
 import wx;
 from _Global import _GG;
 from function.base import *;
-from utils import importUtil;
 
 class LauncherLoader(object):
 	def __init__(self):
 		super(LauncherLoader, self).__init__();
 		self.className_ = LauncherLoader.__name__;
-		self.curPath = _GG("g_AssetsPath") + "launcher\\";
+		self.curPath = _GG("g_AssetsPath") + "launcher/";
 		self.createFunc = None;
 		self.runFunc = None;
 
@@ -26,7 +25,7 @@ class LauncherLoader(object):
 		self.launch();
 
 	def createWindow(self):
-		self.windowCtr = CreateCtr(self.curPath + "window\\LauncherWindow", None);
+		self.windowCtr = CreateCtr(self.curPath + "window/LauncherWindow", None);
 
 	def runWindow(self):
 		self.windowCtr.getUI().Centre();

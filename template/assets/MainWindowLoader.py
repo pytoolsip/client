@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 16:50:24
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:36:44
 
 import wx;
 from _Global import _GG;
@@ -88,9 +88,9 @@ class MainWindowLoader(object):
 		self.MainApp.ExitMainLoop(); # 退出App的主循环
 		if sys.platform == "win32":
 			if ProjectConfig["isOpenLogWin"] :
-				os.system('start ..\\run\\run.bat'); # 启动app【有日志窗口】
+				os.system('start ../run/run.bat'); # 启动app【有日志窗口】
 			else :
-				os.system('cd ..\\run\\&&run.vbs'); # 启动app【无日志窗口】
+				os.system('cd ../run/&&run.vbs'); # 启动app【无日志窗口】
 
 	def runWindows(self):
 		self.parentWindowUI.Tile();
@@ -144,4 +144,4 @@ class MainWindowLoader(object):
 		self.createMainView();
 
 	def createMainView(self):
-		self.MainViewCtr = CreateCtr(self.curPath + "\\tool\\MainView", self.MainWindowUI);
+		self.MainViewCtr = CreateCtr(self.curPath + "/tool/MainView", self.MainWindowUI);

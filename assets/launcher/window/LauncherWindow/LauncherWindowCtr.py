@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 14:54:43
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:36:21
 
 import wx;
 import threading;
@@ -23,7 +23,7 @@ class LauncherWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(LauncherWindowCtr, self).__init__();
 		self.className_ = LauncherWindowCtr.__name__;
-		self.curPath = _GG("g_AssetsPath") + "launcher\\LauncherWindow\\";
+		self.curPath = _GG("g_AssetsPath") + "launcher/LauncherWindow/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -95,7 +95,7 @@ class LauncherWindowCtr(object):
 		self.UI.updateWindow(data);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self.getUI(), {"path" : _GG("g_AssetsPath") + "launcher\\behavior\\VerifyProjectBehavior"});
+		_GG("BehaviorManager").bindBehavior(self.getUI(), {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
 		pass;
 		
 	def unbindBehaviors(self):

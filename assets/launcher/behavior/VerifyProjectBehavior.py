@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-17 22:27:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 16:08:56
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:46:33
 import sys;
 import os;
 import wx;
+import json;
 
 from _Global import _GG;
 from function.base import *;
-from utils import importUtil;
 
 def getExposeData():
 	return {
@@ -48,15 +48,15 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	def verifydDepends(self, depends = []):
 		depends.append({
 			"path" : "verifyBehavior/VerifyEnvironmentBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior\\",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 		depends.append({
 			"path" : "installBehavior/InstallPythonPackageBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior\\",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 		depends.append({
 			"path" : "serviceBehavior/ServiceBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior\\",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 		return depends;
 
@@ -117,13 +117,17 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	# 校验import模块
 	def verifyModuleMap(self, obj, _retTuple = None):
 		if hasattr(obj, "checkPackageIsInstalled"):
-			jsonPath = _GG("g_AssetsPath") + "launcher\\json\\importMap.json";
+			jsonPath = _GG("g_AssetsPath") + "launcher/json/importMap.json";
 			if os.path.exists(jsonPath):
 				modNameList = [];
-				moduleMap = importUtil.readJsonFile(jsonPath);
-				for modName in moduleMap:
-					if not obj.checkPackageIsInstalled(modName):
-						modNameList.append(modName);
+				# 读取json文件
+				with open(jsonPath, "rb") as f:
+					moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
+					# 校验模块
+					for modName in moduleMap:
+						if not obj.checkPackageIsInstalled(modName):
+							modNameList.append(modName);
+					f.close();
 				if len(modNameList) == 0:
 					return True;
 				else:
