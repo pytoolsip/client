@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 11:59:45
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-01 10:52:39
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-15 18:59:38
 
 import os;
 
@@ -12,6 +12,7 @@ from launcher._load import LauncherLoader;
 # 初始化窗口加载器
 Loader = Loader(os.getcwd());
 Loader.loadGlobalInfo();
+Loader.verifyDefaultData();
 WindowLoader = Loader.getWindowLoader();
 
 # 创建工程窗口
