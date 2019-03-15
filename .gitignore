@@ -104,4 +104,6 @@ venv.bak/
 .mypy_cache/
 
 # project
-assets/common
+/assets/common
+/data
+/log

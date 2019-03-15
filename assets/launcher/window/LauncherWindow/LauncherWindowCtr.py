@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:04:02
+# @Last Modified time: 2019-03-15 17:22:37
 
 import wx;
 import threading;
@@ -95,7 +95,7 @@ class LauncherWindowCtr(object):
 		self.__ui.updateWindow(data);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self.getUI(), {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -204,30 +204,30 @@ class LauncherWindowCtr(object):
 	# 校验工程
 	def verifyProject(self):
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyPythonEnv,
+			"scheduleTask" : self.verifyPythonEnv,
 			"text" : "正在校验python环境",
 			"failInfo" : {
 				"text" : "校验python环境失败！",
-				# "failCallback" : self.getUI().showEntryPyPathDialog,
+				# "failCallback" : self.showEntryPyPathDialog,
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyPipEnv,
+			"scheduleTask" : self.verifyPipEnv,
 			"text" : "正在校验pip环境",
 			"failInfo" : {
 				"text" : "校验pip环境失败！",
-				# "failCallback" : self.getUI().showInstallPipMsgDialog,
+				# "failCallback" : self.showInstallPipMsgDialog,
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyModuleMap,
+			"scheduleTask" : self.verifyModuleMap,
 			"text" : "正在校验工程所需模块",
 			"failInfo" : {
 				"text" : "校验工程所需模块失败！",
-				# "failCallback" : self.getUI().showInstallModMsgDialog,
+				# "failCallback" : self.showInstallModMsgDialog,
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyCommonVersion,
+			"scheduleTask" : self.verifyCommonVersion,
 			"text" : "正在校验Common版本",
 		});

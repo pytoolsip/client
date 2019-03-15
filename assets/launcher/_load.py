@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 21:32:27
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:01:52
+# @Last Modified time: 2019-03-15 17:28:41
 
 import os;
 import wx;
@@ -16,6 +16,7 @@ class LauncherLoader(object):
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.createFunc = None;
 		self.runFunc = None;
+		self.bindBehavior();
 
 	def load(self, createFunc, runFunc):
 		self.createFunc = createFunc;
@@ -53,3 +54,15 @@ class LauncherLoader(object):
 			wx.CallAfter(self.runFunc);
 		# 关闭启动窗口
 		self.closeWindow();
+		# 自动登录
+		wx.CallAfter(self.autoLogin);
+
+	def bindBehavior(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : _GG("g_CommonPath") + "behavior/serviceBehavior/ServiceBehavior"});
+
+	# 自动登录
+	def autoLogin(self):
+		_GG("Log").i("Try to auto login ...");
+		# 绑定serviceBehavior/ServiceBehavior组件
+		if hasattr(self, "autoLoginIP"):
+			self.autoLoginIP();
