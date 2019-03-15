@@ -14,5 +14,6 @@
     "ConfigParser": 0,
     "getpass": 1,
     "time": 1,
-    "wx": 1
+    "wx": 1,
+    "paramiko": 1
 }

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 17:22:37
+# @Last Modified time: 2019-03-15 20:40:32
 
 import wx;
 import threading;
@@ -95,7 +95,7 @@ class LauncherWindowCtr(object):
 		self.__ui.updateWindow(data);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
+		_GG("BehaviorManager").bindBehavior(self.getUI(), {"path" : _GG("g_AssetsPath") + "launcher/behavior/VerifyProjectBehavior"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -204,7 +204,7 @@ class LauncherWindowCtr(object):
 	# 校验工程
 	def verifyProject(self):
 		self.addLauncherEvent({
-			"scheduleTask" : self.verifyPythonEnv,
+			"scheduleTask" : self.getUI().verifyPythonEnv,
 			"text" : "正在校验python环境",
 			"failInfo" : {
 				"text" : "校验python环境失败！",
@@ -212,7 +212,7 @@ class LauncherWindowCtr(object):
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.verifyPipEnv,
+			"scheduleTask" : self.getUI().verifyPipEnv,
 			"text" : "正在校验pip环境",
 			"failInfo" : {
 				"text" : "校验pip环境失败！",
@@ -220,7 +220,7 @@ class LauncherWindowCtr(object):
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.verifyModuleMap,
+			"scheduleTask" : self.getUI().verifyModuleMap,
 			"text" : "正在校验工程所需模块",
 			"failInfo" : {
 				"text" : "校验工程所需模块失败！",
@@ -228,6 +228,6 @@ class LauncherWindowCtr(object):
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.verifyCommonVersion,
+			"scheduleTask" : self.getUI().verifyCommonVersion,
 			"text" : "正在校验Common版本",
 		});
