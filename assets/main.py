@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 11:59:45
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 20:04:02
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 01:09:34
 import sys,os;
+from imp import reload;
 # 设置默认编码格式
-reload(sys);
-sys.setdefaultencoding('utf-8');
+if hasattr(sys, "setdefaultencoding"):
+	reload(sys);
+	sys.setdefaultencoding('utf-8');
 
 from common._load import Loader;
 from launcher._load import LauncherLoader;

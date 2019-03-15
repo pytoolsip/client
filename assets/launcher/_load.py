@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-09 21:32:27
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 17:28:41
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 02:05:17
 
 import os;
 import wx;
@@ -58,11 +58,11 @@ class LauncherLoader(object):
 		wx.CallAfter(self.autoLogin);
 
 	def bindBehavior(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : _GG("g_CommonPath") + "behavior/serviceBehavior/ServiceBehavior"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 
 	# 自动登录
 	def autoLogin(self):
-		_GG("Log").i("Try to auto login ...");
 		# 绑定serviceBehavior/ServiceBehavior组件
 		if hasattr(self, "autoLoginIP"):
+			_GG("Log").i("Auto login IP ...");
 			self.autoLoginIP();
