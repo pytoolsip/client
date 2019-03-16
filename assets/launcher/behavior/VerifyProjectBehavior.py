@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-17 22:27:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:26
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:27
 import sys;
 import os;
 import wx;
@@ -45,7 +45,7 @@ def __getDepends__():
 
 class VerifyProjectBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(VerifyProjectBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(VerifyProjectBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = VerifyProjectBehavior.__name__;
 		pass;
 
