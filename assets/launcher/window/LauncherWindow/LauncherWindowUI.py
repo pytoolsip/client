@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-09 22:41:23
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:01:53
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:29
 
 import wx;
 
@@ -13,7 +13,7 @@ class LauncherWindowUI(wx.Frame):
 	"""docstring for LauncherWindowUI"""
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(LauncherWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style);
-		self.className_ = LauncherWindowUI.__name__;
+		self._className_ = LauncherWindowUI.__name__;
 		self._curPath = curPath;
 		self.__windowCtr = windowCtr;
 

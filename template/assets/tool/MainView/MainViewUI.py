@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-08 21:02:23
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:53
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:37
 
 import wx;
 
@@ -14,7 +14,7 @@ class MainViewUI(wx.ScrolledWindow):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(MainViewUI, self).__init__(parent, id, size = self.__params["size"]);
-		self.className_ = MainViewUI.__name__;
+		self._className_ = MainViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.bindEvents(); # 绑定事件

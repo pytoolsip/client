@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-08 13:41:18
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:47
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:27
 
 import wx;
 
@@ -14,7 +14,7 @@ class LauncherGaugeViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(LauncherGaugeViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = LauncherGaugeViewUI.__name__;
+		self._className_ = LauncherGaugeViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 

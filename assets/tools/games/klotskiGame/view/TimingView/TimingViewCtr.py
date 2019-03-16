@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-22 09:09:43
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:04:07
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:33
 import os;
 import wx;
 
@@ -19,7 +19,7 @@ class TimingViewCtr(object):
 	"""docstring for TimingViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(TimingViewCtr, self).__init__();
-		self.className_ = TimingViewCtr.__name__;
+		self._className_ = TimingViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI

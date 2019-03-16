@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-02 13:33:12
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:04:05
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:32
 import os;
 import wx;
 
@@ -19,7 +19,7 @@ class KlotskiViewCtr(object):
 	"""docstring for KlotskiViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(KlotskiViewCtr, self).__init__();
-		self.className_ = KlotskiViewCtr.__name__;
+		self._className_ = KlotskiViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI

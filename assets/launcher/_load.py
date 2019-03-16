@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-09 21:32:27
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 02:05:17
+# @Last Modified time: 2019-03-16 13:46:25
 
 import os;
 import wx;
@@ -12,7 +12,7 @@ from function.base import *;
 class LauncherLoader(object):
 	def __init__(self):
 		super(LauncherLoader, self).__init__();
-		self.className_ = LauncherLoader.__name__;
+		self._className_ = LauncherLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.createFunc = None;
 		self.runFunc = None;

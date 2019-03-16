@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-02 13:33:13
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:50
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:32
 
 import math;
 import wx;
@@ -24,7 +24,7 @@ class KlotskiViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(KlotskiViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = KlotskiViewUI.__name__;
+		self._className_ = KlotskiViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__playing, self.curPos, self.curItem = False, None, None;

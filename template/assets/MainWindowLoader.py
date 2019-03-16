@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:57:22
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:35
 
 import wx;
 from _Global import _GG;
@@ -13,7 +13,7 @@ from ProjectConfig import ProjectConfig;
 class MainWindowLoader(object):
 	def __init__(self):
 		super(MainWindowLoader, self).__init__();
-		self.className_ = MainWindowLoader.__name__;
+		self._className_ = MainWindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.MainApp = wx.App();
 		self.toolWinSizeEventDict = {}; # 窗口大小事件字典

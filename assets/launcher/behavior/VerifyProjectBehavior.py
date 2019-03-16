@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-17 22:27:40
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:59:31
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:26
 import sys;
 import os;
 import wx;
@@ -11,12 +11,12 @@ import json;
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName" : {},
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"verifyPythonEnv" : DoType.AddToRear,
 		"verifyPipEnv" : DoType.AddToRear,
@@ -27,38 +27,32 @@ def getExposeMethod(DoType):
 		"showInstallModMsgDialog" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		{
+			"path" : "verifyBehavior/VerifyEnvironmentBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+		{
+			"path" : "installBehavior/InstallPythonPackageBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+		{
+			"path" : "serviceBehavior/ServiceBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+	];
+
 class VerifyProjectBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		self.verifydDepends(depends);
-		super(VerifyProjectBehavior, self).__init__(depends);
-		self.className_ = VerifyProjectBehavior.__name__;
+	def __init__(self):
+		super(VerifyProjectBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = VerifyProjectBehavior.__name__;
 		pass;
-
-	def getExposeData(self):
-		return getExposeData(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return getExposeMethod(DoType); # 获取暴露出的方法接口
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, _retTuple = None, *argList, _retTuple = None, **argDict):
-	# 	_GG("Log").i(obj.className_);
+	# 	_GG("Log").i(obj._className_);
 	# 	pass;
-
-	def verifydDepends(self, depends = []):
-		depends.append({
-			"path" : "verifyBehavior/VerifyEnvironmentBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
-		depends.append({
-			"path" : "installBehavior/InstallPythonPackageBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
-		depends.append({
-			"path" : "serviceBehavior/ServiceBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
-		return depends;
 
 	def showEntryPyPathDialog(self, obj, _retTuple = None):
 		entryDialog = wx.TextEntryDialog(obj, "未检测到python运行环境，请手动输入python运行程序路径：", "校验python环境失败！");
