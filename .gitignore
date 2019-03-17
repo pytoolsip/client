@@ -106,3 +106,4 @@ venv.bak/
 # project
 data/
 log/
+assets/common/*
