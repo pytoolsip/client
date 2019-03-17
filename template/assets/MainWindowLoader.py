@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:35
+# @Last Modified time: 2019-03-16 23:45:15
 
 import wx;
 from _Global import _GG;
@@ -10,14 +10,14 @@ from _Global import isExist_G;
 from function.base import *;
 from ProjectConfig import ProjectConfig;
 
-class MainWindowLoader(object):
+from window.WindowLoader import WindowLoader;
+
+class MainWindowLoader(WindowLoader):
 	def __init__(self):
 		super(MainWindowLoader, self).__init__();
 		self._className_ = MainWindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
-		self.MainApp = wx.App();
-		self.toolWinSizeEventDict = {}; # 窗口大小事件字典
-		self.registerEvent(); # 注册事件
+		self.__toolWinSizeEventDict = {}; # 窗口大小事件字典
 
 	def __del__(self):
 		self.__dest__();
@@ -32,25 +32,21 @@ class MainWindowLoader(object):
 			self.unregisterEvent(); # 注销事件
 		pass;
 
-	def initWindowEvent(self):
-		self.initKeyDownEvent(); # 初始化按下按键事件
-		pass;
-
 	def createWindows(self):
 		self.createParentWindowCtr();
 		self.createMainWindowCtr();
 		pass;
 
 	def createParentWindowCtr(self):
-		self.parentWindowUI = wx.MDIParentFrame(None, -1, title = ProjectConfig["name"], size = ProjectConfig["winSize"], style = wx.DEFAULT_FRAME_STYLE|wx.FRAME_NO_WINDOW_MENU); # 加载并获取UI
-		self.parentWindowUI.Bind(wx.EVT_SIZE, self.onParentWinSize);
-		self.parentWindowUI.ClientWindow.Bind(wx.EVT_SIZE, self.onClientWinSize);
-		self.PreWinUISize = self.parentWindowUI.Size; # 初始化self.PreWinUISize
-		self.parentWindowUI.ClientWindow.Size = self.parentWindowUI.Size; # 重置self.parentWindowUI.ClientWindow.Size
+		self._parentWindowUI = wx.MDIParentFrame(None, -1, title = ProjectConfig["name"], size = ProjectConfig["winSize"], style = wx.DEFAULT_FRAME_STYLE|wx.FRAME_NO_WINDOW_MENU); # 加载并获取UI
+		self._parentWindowUI.Bind(wx.EVT_SIZE, self.onParentWinSize);
+		self._parentWindowUI.ClientWindow.Bind(wx.EVT_SIZE, self.onClientWinSize);
+		self.__PreWinUISize = self._parentWindowUI.Size; # 初始化self.__PreWinUISize
+		self._parentWindowUI.ClientWindow.Size = self._parentWindowUI.Size; # 重置self._parentWindowUI.ClientWindow.Size
 		
 	def createMainWindowCtr(self):
-		self.MainWindowUI = wx.MDIChildFrame(self.parentWindowUI, -1, title = "", pos = (0,0), size = self.parentWindowUI.ClientWindow.Size, style = wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.CAPTION));
-		self.MainWindowUI.Bind(wx.EVT_SIZE, self.onToolWinSize);
+		self.__MainWindowUI = wx.MDIChildFrame(self._parentWindowUI, -1, title = "", pos = (0,0), size = self._parentWindowUI.ClientWindow.Size, style = wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.CAPTION));
+		self.__MainWindowUI.Bind(wx.EVT_SIZE, self.onToolWinSize);
 	
 	# 初始化窗口对象的公有函数
 	def initWindowMethods(self):
@@ -58,90 +54,66 @@ class MainWindowLoader(object):
 		_GG("WindowObject").BindEventToToolWinSize = self.bindEventToToolWinSize; # 绑定工具窗口大小变化事件
 		_GG("WindowObject").UnbindEventToToolWinSize = self.unbindEventToToolWinSize; # 解绑工具窗口大小变化事件
 		_GG("WindowObject").GetMainWindowCenterPoint = self.getMainWindowCenterPoint; # 获取主窗口的中心点
+		_GG("WindowObject").CreateMessageDialog = self.createMessageDialog; # 设置显示消息弹窗函数
+		_GG("WindowObject").CreateDialogCtr = self.createDialogCtr; # 设置显示弹窗控制器
 
 	def getToolWinSize(self):
-		mainWinSize = self.MainWindowUI.GetClientSize();
+		mainWinSize = self.__MainWindowUI.GetClientSize();
 		return wx.Size(mainWinSize.x - 18, mainWinSize.y - 44);
 
 	def onParentWinSize(self, event):
-		self.parentWindowUI.ClientWindow.Size = self.parentWindowUI.Size;
+		self._parentWindowUI.ClientWindow.Size = self._parentWindowUI.Size;
 		
 	def onClientWinSize(self, event):
-		preWinUISize = self.PreWinUISize;
-		curSize = self.parentWindowUI.GetSize();
-		# 重置PreWinUISize
-		self.PreWinUISize = curSize;
-		# 重置MainWindowUI Size
-		if hasattr(self, "MainWindowUI"):
-			self.MainWindowUI.SetSize(self.MainWindowUI.Size[0] + curSize[0] - preWinUISize[0], self.MainWindowUI.Size[1] + curSize[1] - preWinUISize[1]);	
-
-	def initKeyDownEvent(self):
-		self.MainApp.Bind(wx.EVT_CHAR_HOOK, _GG("HotKeyManager").dispatchEvent);
-
-	def registerEvent(self):
-		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
-
-	def unregisterEvent(self):
-		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
-
-	def restartApp(self, data):
-		self.MainApp.ExitMainLoop(); # 退出App的主循环
-		if sys.platform == "win32":
-			if ProjectConfig["isOpenLogWin"] :
-				os.system('start ../run/run.bat'); # 启动app【有日志窗口】
-			else :
-				os.system('cd ../run/&&run.vbs'); # 启动app【无日志窗口】
-
-	def runWindows(self):
-		self.parentWindowUI.Tile();
-		self.parentWindowUI.Centre();
-		self.parentWindowUI.Show(True);
-		self.MainApp.MainLoop();
+		preWinUISize = self.__PreWinUISize;
+		curSize = self._parentWindowUI.GetSize();
+		# 重置__PreWinUISize
+		self.__PreWinUISize = curSize;
+		# 重置__MainWindowUI Size
+		if hasattr(self, "__MainWindowUI"):
+			self.__MainWindowUI.SetSize(self.__MainWindowUI.Size[0] + curSize[0] - preWinUISize[0], self.__MainWindowUI.Size[1] + curSize[1] - preWinUISize[1]);	
 
 	def bindEventToToolWinSize(self, obj, func):
 		if callable(func):
 			objId = id(obj);
-			if objId not in self.toolWinSizeEventDict:
-				self.toolWinSizeEventDict[objId] = {"obj" : obj, "funcDict" : {}};
-			self.toolWinSizeEventDict[objId]["funcDict"][id(func)] = func;
+			if objId not in self.__toolWinSizeEventDict:
+				self.__toolWinSizeEventDict[objId] = {"obj" : obj, "funcDict" : {}};
+			self.__toolWinSizeEventDict[objId]["funcDict"][id(func)] = func;
 
 	def unbindEventToToolWinSize(self, obj, func = None):
 		objId = id(obj);
-		if objId in self.toolWinSizeEventDict:
+		if objId in self.__toolWinSizeEventDict:
 			if not func:
-				self.toolWinSizeEventDict.pop(objId);
+				self.__toolWinSizeEventDict.pop(objId);
 			elif callable(func):
 				funcId = id(func);
-				if funcId in self.toolWinSizeEventDict[objId]["funcDict"]:
-					self.toolWinSizeEventDict[objId]["funcDict"].pop(funcId);
+				if funcId in self.__toolWinSizeEventDict[objId]["funcDict"]:
+					self.__toolWinSizeEventDict[objId]["funcDict"].pop(funcId);
 
 	def onToolWinSize(self, event):
 		if not hasattr(self, "OriToolUISize"):
-			self.OriToolUISize = self.MainWindowUI.GetSize();
-			self.PreToolUISize = self.MainWindowUI.GetSize();
-		curToolUISize = self.MainWindowUI.GetSize();
+			self.OriToolUISize = self.__MainWindowUI.GetSize();
+			self.PreToolUISize = self.__MainWindowUI.GetSize();
+		curToolUISize = self.__MainWindowUI.GetSize();
 		sizeInfo = {
 			"oriDiff" : curToolUISize - self.OriToolUISize,
 			"preDiff" : curToolUISize - self.PreToolUISize,
 		}
-		for objId in self.toolWinSizeEventDict:
-			if self.toolWinSizeEventDict[objId]["obj"]:
-				for funcId in self.toolWinSizeEventDict[objId]["funcDict"]:
-					self.toolWinSizeEventDict[objId]["funcDict"][funcId](sizeInfo, event = event);
+		for objId in self.__toolWinSizeEventDict:
+			if self.__toolWinSizeEventDict[objId]["obj"]:
+				for funcId in self.__toolWinSizeEventDict[objId]["funcDict"]:
+					self.__toolWinSizeEventDict[objId]["funcDict"][funcId](sizeInfo, event = event);
 		# 重置PreToolUISize
 		self.PreToolUISize = curToolUISize;
 
 	def getMainWindowCenterPoint(self, isToScreen = True):
-		pos = self.MainWindowUI.GetPosition();
+		pos = self.__MainWindowUI.GetPosition();
 		if isToScreen == True:
-			pos = self.MainWindowUI.ClientToScreen(pos);
-		return wx.Point(pos[0] + self.MainWindowUI.GetSize().x/2, pos[1] + self.MainWindowUI.GetSize().y/2);
-
-	def createViews(self):
-		wx.CallLater(500, self.onCreateViews);
+			pos = self.__MainWindowUI.ClientToScreen(pos);
+		return wx.Point(pos[0] + self.__MainWindowUI.GetSize().x/2, pos[1] + self.__MainWindowUI.GetSize().y/2);
 
 	def onCreateViews(self, event = None):
 		self.createMainView();
 
 	def createMainView(self):
-		self.MainViewCtr = CreateCtr(self._curPath + "/tool/MainView", self.MainWindowUI);
+		self.MainViewCtr = CreateCtr(self._curPath + "/tool/MainView", self.__MainWindowUI);
