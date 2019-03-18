@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 23:45:15
+# @Last Modified time: 2019-03-18 23:06:08
 
 import wx;
 from _Global import _GG;
@@ -18,6 +18,7 @@ class MainWindowLoader(WindowLoader):
 		self._className_ = MainWindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__toolWinSizeEventDict = {}; # 窗口大小事件字典
+		self.__syncData__(); # 同步数据
 
 	def __del__(self):
 		self.__dest__();
@@ -117,3 +118,16 @@ class MainWindowLoader(WindowLoader):
 
 	def createMainView(self):
 		self.MainViewCtr = CreateCtr(self._curPath + "/tool/MainView", self.__MainWindowUI);
+
+	def __syncData__(self):
+		# 同步ProjectConfig的name、version到tool.json
+		configPath = self._curPath + "tool/tool.json";
+		toolConfig = {};
+		if os.path.exists(configPath):
+			with open(configPath, "r") as f:
+				toolConfig = json.loads(f.read());
+		# 更新name、version
+		for k in ["name", "version"]:
+			toolConfig[k] = ProjectConfig[k];
+		with open(configPath, "w+") as f:
+			f.write(json.dumps(toolConfig));
