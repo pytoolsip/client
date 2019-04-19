@@ -2,13 +2,8 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 11:59:45
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 01:09:34
+# @Last Modified time: 2019-04-19 22:03:42
 import sys,os;
-from imp import reload;
-# 设置默认编码格式
-if hasattr(sys, "setdefaultencoding"):
-	reload(sys);
-	sys.setdefaultencoding('utf-8');
 
 from common._load import Loader;
 from launcher._load import LauncherLoader;

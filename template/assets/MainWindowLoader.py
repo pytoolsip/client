@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-10-08 20:56:43
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-20 14:16:47
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-04-19 21:41:37
 
 import wx,json;
 from _Global import _GG;
@@ -50,13 +50,11 @@ class MainWindowLoader(WindowLoader):
 		self.__MainWindowUI.Bind(wx.EVT_SIZE, self.onToolWinSize);
 	
 	# 初始化窗口对象的公有函数
-	def initWindowMethods(self):
+	def initMainWindowMethods(self):
 		_GG("WindowObject").GetToolWinSize = self.getToolWinSize; # 设置获取工具窗口大小的函数
 		_GG("WindowObject").BindEventToToolWinSize = self.bindEventToToolWinSize; # 绑定工具窗口大小变化事件
 		_GG("WindowObject").UnbindEventToToolWinSize = self.unbindEventToToolWinSize; # 解绑工具窗口大小变化事件
 		_GG("WindowObject").GetMainWindowCenterPoint = self.getMainWindowCenterPoint; # 获取主窗口的中心点
-		_GG("WindowObject").CreateMessageDialog = self.createMessageDialog; # 设置显示消息弹窗函数
-		_GG("WindowObject").CreateDialogCtr = self.createDialogCtr; # 设置显示弹窗控制器
 
 	def getToolWinSize(self):
 		mainWinSize = self.__MainWindowUI.GetClientSize();
