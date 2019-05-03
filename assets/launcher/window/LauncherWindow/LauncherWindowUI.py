@@ -39,7 +39,7 @@ class LauncherWindowUI(wx.Frame):
 		hbox = wx.BoxSizer(wx.HORIZONTAL);
 		vbox = wx.BoxSizer(wx.VERTICAL);
 		vbox.Add(self.title, 0, wx.ALIGN_CENTER|wx.TOP, 40);
-		vbox.Add(self.reverifyButton, 0, wx.ALIGN_CENTER|wx.TOP, 60)
+		vbox.Add(self.reverifyButton, 0, wx.ALIGN_CENTER|wx.TOP, 40)
 		vbox.Add(self.getCtr().getUIByKey("LauncherGaugeView"), 0, wx.ALIGN_CENTER);
 		vbox.Add(self.detailTextCtrl, 0, wx.ALIGN_CENTER|wx.TOP, 10)
 		vbox.Add(self.copyrightInfo, 0, wx.ALIGN_CENTER|wx.TOP, 4);

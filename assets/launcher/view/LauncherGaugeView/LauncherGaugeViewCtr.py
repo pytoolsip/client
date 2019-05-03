@@ -25,7 +25,6 @@ class LauncherGaugeViewCtr(object):
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
-		self.scheduleTaskList = []; # 调度任务列表
 
 	def __del__(self):
 		self.__dest__();
