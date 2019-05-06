@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-12-17 22:27:40
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 15:09:27
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-05-06 09:45:30
 import sys;
 import os;
 import wx;
@@ -23,6 +23,7 @@ def __getExposeMethod__(DoType):
 		"verifyModuleMap" : DoType.AddToRear,
 		"verifyCommonVersion" : DoType.AddToRear,
 		"showEntryPyPathDialog" : DoType.AddToRear,
+		"showEntryPyVerPathDialog" : DoType.AddToRear,
 		"showInstallPipMsgDialog" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
 	};
@@ -57,16 +58,25 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	def showEntryPyPathDialog(self, obj, _retTuple = None):
 		entryDialog = wx.TextEntryDialog(obj, "未检测到python运行环境，请手动输入python运行程序路径：", "校验python环境失败！");
 		if entryDialog.ShowModal() == wx.ID_OK:
-			if entryDialog.GetValue():
-				obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
-				_GG("ClientConfig").Config().Set("env", "python", entryDialog.GetValue()); # 保存python运行环境
-				return True;
+			obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
+			_GG("ClientConfig").Config().Set("env", "python", entryDialog.GetValue()); # 保存python运行环境
+			return True;
+		return False;
+
+	def showEntryPyVerPathDialog(self, obj, _retTuple = None):
+		entryDialog = wx.TextEntryDialog(obj, "检测到的python版本<3.4，请手动输入>3.4版本的python运行程序路径：", "校验python版本失败！");
+		if entryDialog.ShowModal() == wx.ID_OK:
+			obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
+			_GG("ClientConfig").Config().Set("env", "python", entryDialog.GetValue()); # 保存python运行环境
+			return True;
 		return False;
 
 	# 校验python环境
 	def verifyPythonEnv(self, obj, _retTuple = None):
 		if hasattr(obj, "verifyPythonEnvironment"):
-			if obj.verifyPythonEnvironment():
+			if obj.verifyPythonEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
+				if not obj.verifyPythonVersion(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
+					return False, obj.showEntryPyVerPathDialog;
 				return True;
 			else:
 				return False, obj.showEntryPyPathDialog;
@@ -85,7 +95,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	# 校验pip安装环境
 	def verifyPipEnv(self, obj, _retTuple = None):
 		if hasattr(obj, "verifyPipEnvironment"):
-			if obj.verifyPipEnvironment():
+			if obj.verifyPipEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
 				return True;
 			else:
 				return False, obj.showInstallPipMsgDialog;
@@ -110,7 +120,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 
 	# 校验import模块
 	def verifyModuleMap(self, obj, _retTuple = None):
-		if hasattr(obj, "checkPackageIsInstalled"):
+		if hasattr(obj, "getInstalledPackagesByPip"):
 			jsonPath = _GG("g_AssetsPath") + "launcher/json/importMap.json";
 			if os.path.exists(jsonPath):
 				modNameList = [];
@@ -118,15 +128,16 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 				with open(jsonPath, "rb") as f:
 					moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
 					# 校验模块
+					installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
 					for modName in moduleMap:
-						if not obj.checkPackageIsInstalled(modName):
+						if modName not in installedPkgDict:
 							modNameList.append(modName);
 					f.close();
 				if len(modNameList) == 0:
 					return True;
 				else:
 					return False, obj.showInstallModMsgDialog, modNameList;
-		raise Exception("There is not attr of checkPackageIsInstalled in obj !");
+		raise Exception("There is not attr of getInstalledPackagesByPip in obj !");
 
 	# 校验Common版本
 	def verifyCommonVersion(self, obj, _retTuple = None):
