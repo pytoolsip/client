@@ -18,14 +18,11 @@ def __getExposeData__():
 
 def __getExposeMethod__(DoType):
 	return {
-		"verifyPythonEnv" : DoType.AddToRear,
-		"verifyPipEnv" : DoType.AddToRear,
-		"verifyModuleMap" : DoType.AddToRear,
-		"verifyCommonVersion" : DoType.AddToRear,
+		"verifyPythonPath" : DoType.AddToRear,
 		"showEntryPyPathDialog" : DoType.AddToRear,
-		"showEntryPyVerPathDialog" : DoType.AddToRear,
-		"showInstallPipMsgDialog" : DoType.AddToRear,
+		"verifyModuleMap" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
+		"verifyCommonVersion" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -55,6 +52,18 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	# 	_GG("Log").i(obj._className_);
 	# 	pass;
 
+	# 校验python环境
+	def verifyPythonPath(self, obj, _retTuple = None):
+		if _GG("g_PythonPath"):
+			# 重置为默认路径
+			_GG("ClientConfig").Config().Set("env", "python", _GG("g_PythonPath"));
+			return True;
+		if obj.verifyPythonEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
+			return True;
+		# 重置为空字符串
+		_GG("ClientConfig").Config().Set("env", "python", "");
+		return False, obj.showEntryPyPathDialog;
+
 	def showEntryPyPathDialog(self, obj, _retTuple = None):
 		entryDialog = wx.TextEntryDialog(obj, "未检测到python运行环境，请手动输入python运行程序路径：", "校验python环境失败！");
 		if entryDialog.ShowModal() == wx.ID_OK:
@@ -63,81 +72,60 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 			return True;
 		return False;
 
-	def showEntryPyVerPathDialog(self, obj, _retTuple = None):
-		entryDialog = wx.TextEntryDialog(obj, "检测到的python版本<3.4，请手动输入>3.4版本的python运行程序路径：", "校验python版本失败！");
-		if entryDialog.ShowModal() == wx.ID_OK:
-			obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
-			_GG("ClientConfig").Config().Set("env", "python", entryDialog.GetValue()); # 保存python运行环境
-			return True;
-		return False;
-
-	# 校验python环境
-	def verifyPythonEnv(self, obj, _retTuple = None):
-		if hasattr(obj, "verifyPythonEnvironment"):
-			if obj.verifyPythonEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
-				if not obj.verifyPythonVersion(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
-					return False, obj.showEntryPyVerPathDialog;
-				return True;
-			else:
-				return False, obj.showEntryPyPathDialog;
-		raise Exception("There is not attr of verifyPythonEnvironment in obj !");
-
-	def showInstallPipMsgDialog(self, obj, _retTuple = None):
-		messageDialog = wx.MessageDialog(obj, "是否要确认安装pip环境？", "校验pip环境失败！", style = wx.YES_NO|wx.ICON_QUESTION);
-		if messageDialog.ShowModal() == wx.ID_YES:
-			obj.showDetailTextCtrl(text = "正在安装pip环境...");
-			if hasattr(obj, "installPipByEasyInstall"):
-				if obj.installPipByEasyInstall():
-					obj.showDetailTextCtrl(text = "安装“pip”环境成功。");
-				else:
-					obj.showDetailTextCtrl(text = "安装“pip”环境失败！");
-
-	# 校验pip安装环境
-	def verifyPipEnv(self, obj, _retTuple = None):
-		if hasattr(obj, "verifyPipEnvironment"):
-			if obj.verifyPipEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
-				return True;
-			else:
-				return False, obj.showInstallPipMsgDialog;
-		raise Exception("There is not attr of verifyPipEnvironment in obj !");
-
-	def showInstallModMsgDialog(self, obj, modNameList = [], _retTuple = None):
-		messageDialog = wx.MessageDialog(obj, "是否要确认安装以下模块？\n" + "\n".join(modNameList), "校验import模块失败！", style = wx.YES_NO|wx.ICON_QUESTION);
-		if messageDialog.ShowModal() == wx.ID_YES:
-			obj.showDetailTextCtrl(text = "开始安装校验失败的模块...");
-			if hasattr(obj, "installPackageByPip"):
-				failedNameList = [];
-				for modName in modNameList:
-					if obj.installPackageByPip(modName):
-						obj.showDetailTextCtrl(text = "安装“{}”模块成功。".format(modName));
-					else:
-						obj.showDetailTextCtrl(text = "安装“{}”模块失败！".format(modName));
-						failedNameList.append(modName);
-				return len(failedNameList) == 0;
-			else:
-				raise Exception("There is not attr of installPackageByPip in obj !");
-		return False;
-
 	# 校验import模块
 	def verifyModuleMap(self, obj, _retTuple = None):
-		if hasattr(obj, "getInstalledPackagesByPip"):
-			jsonPath = _GG("g_AssetsPath") + "launcher/json/importMap.json";
-			if os.path.exists(jsonPath):
-				modNameList = [];
-				# 读取json文件
-				with open(jsonPath, "rb") as f:
-					moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
-					# 校验模块
-					installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
-					for modName in moduleMap:
+		jsonPath = _GG("g_AssetsPath") + "launcher/json/importMap.json";
+		if os.path.exists(jsonPath):
+			modNameList = [];
+			uninstallNameList = [];
+			# 读取json文件
+			with open(jsonPath, "rb") as f:
+				moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
+				# 校验模块
+				installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
+				for modName,count in moduleMap.items():
+					if count > 0:
 						if modName not in installedPkgDict:
 							modNameList.append(modName);
-					f.close();
-				if len(modNameList) == 0:
-					return True;
+					else:
+						if modName not in installedPkgDict:
+							uninstallNameList.append(modName);
+				f.close();
+			if len(modNameList) == 0:
+				if len(uninstallNameList) > 0:
+					self.showUninstallModMsgDialog(obj);
+				return True;
+			else:
+				return False, obj.showInstallModMsgDialog, modNameList;
+
+	def showInstallModMsgDialog(self, obj, modNameList = [], _retTuple = None):
+		messageDialog = wx.MessageDialog(obj, "是否确认安装以下模块？\n" + "\n".join(modNameList), "校验import模块失败！", style = wx.YES_NO|wx.ICON_QUESTION);
+		if messageDialog.ShowModal() == wx.ID_YES:
+			obj.showDetailTextCtrl(text = "开始安装校验失败的模块...");
+			failedNameList = [];
+			for modName in modNameList:
+				if obj.installPackageByPip(modName):
+					obj.showDetailTextCtrl(text = "安装“{}”模块成功。".format(modName));
 				else:
-					return False, obj.showInstallModMsgDialog, modNameList;
-		raise Exception("There is not attr of getInstalledPackagesByPip in obj !");
+					obj.showDetailTextCtrl(text = "安装“{}”模块失败！".format(modName));
+					failedNameList.append(modName);
+			return len(failedNameList) == 0;
+		return False;
+
+	def showUninstallModMsgDialog(self, obj, modNameList = [], _retTuple = None):
+		if _GG("g_PythonPath"):
+			messageDialog = wx.MessageDialog(obj, "发现有未使用的模块，是否确认卸载以下模块？\n" + "\n".join(modNameList), "校验import模块成功！", style = wx.YES_NO|wx.ICON_QUESTION);
+			if messageDialog.ShowModal() == wx.ID_YES:
+				obj.showDetailTextCtrl(text = "开始卸载未使用的模块...");
+				failedNameList = [];
+				for modName in modNameList:
+					if obj.uninstallPackageByPip(modName, pythonPath = _GG("g_PythonPath")):
+						obj.showDetailTextCtrl(text = "卸载“{}”模块成功。".format(modName));
+					else:
+						obj.showDetailTextCtrl(text = "卸载“{}”模块失败！".format(modName));
+						failedNameList.append(modName);
+				return len(failedNameList) == 0;
+		return False;
 
 	# 校验Common版本
 	def verifyCommonVersion(self, obj, _retTuple = None):
