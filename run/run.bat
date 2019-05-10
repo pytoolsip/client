@@ -1,7 +1,7 @@
 @REM @Author: JinZhang
 @REM @Date:   2018-04-19 17:16:41
 @REM @Last Modified by:   JinZhang
-@REM Modified time: 2019-05-10 19:57:45
+@REM Modified time: 2019-05-10 20:11:19
 
 @echo off && setlocal enabledelayedexpansion
 
@@ -56,7 +56,7 @@ if exist ..\assets\build.py (
 :installModules
 rem 安装依赖模块
 set mods=wxPython grpcio protobuf grpcio-tools
-rem %pythonExe% %buildFile% %pythonExe% %mods%
+%pythonExe% %buildFile% %pythonExe% %mods%
 rem 判断是否安装了依赖模块
 set flag=
 for %%a in (%mods%) do (
