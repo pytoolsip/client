@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 11:59:45
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-19 22:03:42
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-05-10 20:17:24
 import sys,os;
+# 当前文件位置
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
+# 添加搜索路径
+if CURRENT_PATH not in sys.path:
+	sys.path.append(CURRENT_PATH);
 
+# 导入加载模块
 from common._load import Loader;
 from launcher._load import LauncherLoader;
 
