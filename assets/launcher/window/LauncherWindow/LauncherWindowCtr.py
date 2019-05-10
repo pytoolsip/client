@@ -204,19 +204,11 @@ class LauncherWindowCtr(object):
 	# 校验工程
 	def verifyProject(self):
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyPythonEnv,
+			"scheduleTask" : self.getUI().verifyPythonPath,
 			"text" : "正在校验python环境",
 			"failInfo" : {
 				"text" : "校验python环境失败！",
 				# "failCallback" : self.showEntryPyPathDialog,
-			},
-		});
-		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyPipEnv,
-			"text" : "正在校验pip环境",
-			"failInfo" : {
-				"text" : "校验pip环境失败！",
-				# "failCallback" : self.showInstallPipMsgDialog,
 			},
 		});
 		self.addLauncherEvent({
