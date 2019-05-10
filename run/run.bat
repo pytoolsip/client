@@ -1,7 +1,7 @@
 @REM @Author: JinZhang
 @REM @Date:   2018-04-19 17:16:41
 @REM @Last Modified by:   JinZhang
-@REM Modified time: 2019-05-10 16:58:14
+@REM Modified time: 2019-05-10 17:13:17
 
 @echo off && setlocal enabledelayedexpansion
 
@@ -42,7 +42,7 @@ if exist ..\assets\main.py (
 rem 获取运行程序
 set pythonExe="python"
 if defined pypath (
-	set pythonExe=%pypath%"\python.exe"
+	set pythonExe=%pypath%\python.exe
 )
 
 rem 判断是否安装了wxPython
@@ -53,7 +53,7 @@ for /f "tokens=2 delims=: " %%i in ('%pythonExe% -m pip show wxPython') do (
 )
 
 :installwx
-echo "Installing wxPython ..."%pythonExe%
+%pythonExe% -m pip install wxPython
 for /f "tokens=2 delims=: " %%i in ('%pythonExe% -m pip show wxPython') do (
 	if %%i==wxPython (
 		goto existed
