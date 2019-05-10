@@ -1,7 +1,7 @@
 @REM @Author: JinZhang
 @REM @Date:   2018-04-19 17:16:41
-@REM @Last Modified by:   JimZhang
-@REM Modified time: 2019-05-06 00:33:48
+@REM @Last Modified by:   JinZhang
+@REM Modified time: 2019-05-10 14:42:05
 
 @echo off && setlocal enabledelayedexpansion
 
@@ -33,12 +33,18 @@ for /f "delims=" %%a in (config.ini) do (
 
 :readover
 
+set mainFile="main.pyc"
+
+if exist ..\assets\main.py (
+	set mainFile="main.py"
+)
+
 cd ..\assets\
 
 if defined pypath (
-	%pypath%\python.exe main.py
+	%pypath%\python.exe %mainFile%
 ) else (
-	python main.py
+	python %mainFile%
 )
 
 pause
