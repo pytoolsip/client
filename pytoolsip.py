@@ -46,9 +46,9 @@ def getBuildFile(assetsPath):
 
 def runCmd(cmd, cwd):
     startupinfo = subprocess.STARTUPINFO();
-    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE|subprocess.STARTF_USESHOWWINDOW;
+    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
     startupinfo.wShowWindow = subprocess.SW_HIDE;
-    subprocess.Popen(cmd, cwd = cwd, startupinfo = startupinfo);
+    subprocess.call(cmd, cwd = cwd, startupinfo = startupinfo);
 
 if __name__ == '__main__':
     # 获取python运行程序
@@ -57,8 +57,9 @@ if __name__ == '__main__':
     # 获取依赖组件
     dependsPath = os.path.abspath(os.path.join(os.getcwd(), "depend.mod"));
     depends = getDepends(dependsPath);
-    assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
     # 安装依赖模块
+    assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
     runCmd(" ".join([pyExe, getBuildFile(assetsPath), pyExe, depends]), assetsPath);
     # 运行main文件
-    runCmd(" ".join([pyExe, getMainFile(assetsPath)]), assetsPath);
+    runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
+    runCmd(" ".join([os.path.join(runPath, "run.bat"), pyExe, assetsPath, getMainFile(assetsPath)]), os.getcwd());
