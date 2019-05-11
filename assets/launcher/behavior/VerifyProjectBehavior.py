@@ -101,9 +101,9 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	def showInstallModMsgDialog(self, obj, modNameList = [], _retTuple = None):
 		messageDialog = wx.MessageDialog(obj, "是否确认安装以下模块？\n" + "\n".join(modNameList), "校验import模块失败！", style = wx.YES_NO|wx.ICON_QUESTION);
 		if messageDialog.ShowModal() == wx.ID_YES:
-			obj.showDetailTextCtrl(text = "开始安装校验失败的模块[" + ";".join(modNameList) + "]...\n此过程可能持续10+秒，请耐心等候...");
 			# 安装模块
 			for modName in modNameList:
+				obj.showDetailTextCtrl(text = "正在安装" + modName + "模块...\n此过程可能持续10+秒，请耐心等候...");
 				obj.installPackageByPip(modName, pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
 			# 校验是否成功安装
 			failedNameList = [];
