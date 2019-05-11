@@ -5,10 +5,23 @@
 # @Last Modified time: 2019-05-10 19:57:05
 import os,sys,json;
 
+# 获取已通过pip安装的包
+def getInstalledPackagesByPip(pyExePath = ""):
+	installedPackageDict = {};
+	installedPackageReader = os.popen(pyExePath + "pip freeze");
+	installedPackageLines = installedPackageReader.read();
+	for line in installedPackageLines.splitlines():
+		lineArr = line.split("==");
+		if len(lineArr) == 2:
+			installedPackageDict[lineArr[0]] = lineArr[1];
+	installedPackageReader.close();
+	return installedPackageDict;
+
 # 校验依赖模块
 def verifyDepends(pyExePath = "", dependList=[]):
+	pkgDict = getInstalledPackagesByPip(pyExePath);
 	for depend in dependList:
-		if os.system(pyExePath + "pip show " + depend) != 0:
+		if depend not in pkgDict:
 			os.system(pyExePath + "pip install " + depend);
 
 if __name__ == '__main__':
