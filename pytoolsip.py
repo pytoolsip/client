@@ -4,7 +4,7 @@
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-04-20 00:00:41
 
-import os,re;
+import os,re,subprocess;
 
 def getPyexe(configPath):
     if os.path.exists(configPath):
@@ -44,6 +44,12 @@ def getBuildFile(assetsPath):
             return name;
     return "build.py";
 
+def runCmd(cmd, cwd):
+    startupinfo = subprocess.STARTUPINFO();
+    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE|subprocess.STARTF_USESHOWWINDOW;
+    startupinfo.wShowWindow = subprocess.SW_HIDE;
+    subprocess.Popen(cmd, cwd = cwd, startupinfo = startupinfo);
+
 if __name__ == '__main__':
     # 获取python运行程序
     configIniPath = os.path.abspath(os.path.join(os.getcwd(), "assets\common\config\ini\config.ini"));
@@ -53,6 +59,6 @@ if __name__ == '__main__':
     depends = getDepends(dependsPath);
     assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
     # 安装依赖模块
-    os.system(" ".join(["cd assets&", pyExe, getBuildFile(assetsPath), pyExe, depends]));
+    runCmd(" ".join([pyExe, getBuildFile(assetsPath), pyExe, depends]), assetsPath);
     # 运行main文件
-    os.system(" ".join(["cd assets&", pyExe, getMainFile(assetsPath)]));
+    runCmd(" ".join([pyExe, getMainFile(assetsPath)]), assetsPath);
