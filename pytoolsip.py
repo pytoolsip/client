@@ -33,14 +33,14 @@ def getDepends(dependPath):
 def getMainFile(assetsPath):
     for name in os.listdir(assetsPath):
         fPath = os.path.join(assetsPath, name);
-        if os.path.isfile(name) and re.search("main\.?.*\.pyc", name):
+        if os.path.isfile(fPath) and re.search("main\.?.*\.pyc", name):
             return name;
     return "main.py";
 
 def getBuildFile(assetsPath):
     for name in os.listdir(assetsPath):
         fPath = os.path.join(assetsPath, name);
-        if os.path.isfile(name) and re.search("build\.?.*\.pyc", name):
+        if os.path.isfile(fPath) and re.search("build\.?.*\.pyc", name):
             return name;
     return "build.py";
 
