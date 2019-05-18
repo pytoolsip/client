@@ -43,12 +43,12 @@ def getPyexe(pyIncludePath, configPath):
     return updatePyexe(pyIncludePath, configPath); # 更新python运行程序路径
 
 def getDepends(dependPath):
+    dependList = [];
     if os.path.exists(dependPath):
-        dependList = [];
         with open(dependPath, "r") as f:
             for line in f.readlines():
                 dependList.append(line.strip());
-    return " ".join(dependList);
+    return dependList;
 
 def getMainFile(assetsPath):
     for name in os.listdir(assetsPath):
@@ -68,7 +68,14 @@ def runCmd(cmd, cwd):
     startupinfo = subprocess.STARTUPINFO();
     startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
     startupinfo.wShowWindow = subprocess.SW_HIDE;
-    subprocess.call(cmd, cwd = cwd, startupinfo = startupinfo);
+    return subprocess.call(cmd, cwd = cwd, startupinfo = startupinfo);
+
+def getInstallDepends(pyExe, dependList = []):
+    depends = [];
+    for depend in dependList:
+        if runCmd(pyExe + " -m pip show " + depend, os.getcwd()) != 0:
+            depends.append(depend);
+    return depends;
 
 if __name__ == '__main__':
     # 获取python依赖路径
@@ -78,10 +85,11 @@ if __name__ == '__main__':
     pyExe = getPyexe(pyIncludePath, configIniPath);
     # 获取依赖组件
     dependsPath = os.path.abspath(os.path.join(os.getcwd(), "depend.mod"));
-    depends = getDepends(dependsPath);
-    # 安装依赖模块
+    depends = getInstallDepends(pyExe, getDepends(dependsPath));
+    # 判断是否安装依赖模块
     assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
-    subprocess.call(" ".join([pyExe, getBuildFile(assetsPath), pyExe, depends]), cwd = assetsPath);
+    if len(depends) > 0:
+        subprocess.call(" ".join([pyExe, getBuildFile(assetsPath), pyExe, " ".join(depends)]), cwd = assetsPath);
     # 运行main文件
     runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
     runCmd(" ".join([os.path.join(runPath, "run.bat"), pyExe, assetsPath, getMainFile(assetsPath)]), os.getcwd());
