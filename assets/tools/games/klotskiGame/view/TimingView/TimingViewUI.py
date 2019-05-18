@@ -105,5 +105,6 @@ class TimingViewUI(wx.Panel):
 
 	def checkStopTimer(self):
 		if self.tryStopTimer:
-			self.stopTimer();
+			if hasattr(self, "m_timer") and self.m_timer.IsRunning():
+				self.m_timer.Stop();
 			self.tryStopTimer = False;
