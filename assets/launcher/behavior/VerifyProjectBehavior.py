@@ -22,7 +22,7 @@ def __getExposeMethod__(DoType):
 		"showEntryPyPathDialog" : DoType.AddToRear,
 		"verifyModuleMap" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
-		"verifyCommonVersion" : DoType.AddToRear,
+		"verifyIPVersion" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -133,7 +133,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 		return False;
 
 	# 校验Common版本
-	def verifyCommonVersion(self, obj, _retTuple = None):
-		if hasattr(obj, "checkUpdateCommon"):
-			obj.checkUpdateCommon();
+	def verifyIPVersion(self, obj, _retTuple = None):
+		if hasattr(obj, "checkUpdateIP"):
+			obj.checkUpdateIP();
 		return True;

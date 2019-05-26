@@ -220,6 +220,6 @@ class LauncherWindowCtr(object):
 			},
 		});
 		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyCommonVersion,
+			"scheduleTask" : self.getUI().verifyIPVersion,
 			"text" : "正在校验Common版本",
 		});
