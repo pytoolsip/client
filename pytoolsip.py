@@ -6,50 +6,62 @@
 
 import os,re,subprocess;
 
-def updatePyexe(pyIncludePath, configPath):
-    pyexePath = os.path.join(pyIncludePath, "python.exe");
-    if os.path.exists(pyexePath):
-        content = "";
-        isHasEnv = False;
-        with open(configPath, "r") as f:
-            for line in f.readlines():
-                content += line;
-                if re.search("[.*]", line):
-                    if line.find("[env]"):
-                        isHasEnv = True;
-                    else:
-                        isHasEnv = False;
-                if isHasEnv and re.search("python\s*=\s*", line):
-                    content += pyexePath;
-        with open(configPath, "w") as f:
-            f.write(content);
-        return pyexePath;
-    return "python";
+# 无日志打印运行命令
+def runCmd(cmd, cwd=os.getcwd(), funcName="call"):
+    startupinfo = subprocess.STARTUPINFO();
+    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
+    startupinfo.wShowWindow = subprocess.SW_HIDE;
+    return getattr(subprocess, funcName)(cmd, cwd = cwd, startupinfo = startupinfo);
 
-def getPyexe(pyIncludePath, configPath):
-    if os.path.exists(configPath):
-        isHasEnv = False;
-        with open(configPath, "r") as f:
-            for line in f.readlines():
-                if re.search("[.*]", line):
-                    if line.find("[env]"):
-                        isHasEnv = True;
-                    else:
-                        isHasEnv = False;
-                if isHasEnv:
-                    matchObj = re.match("python\s*=\s*(.*)$", line);
-                    if matchObj:
-                        return os.path.abspath(os.path.join(matchObj.groups()[0], "python.exe"));
-    return updatePyexe(pyIncludePath, configPath); # 更新python运行程序路径
+# 获取依赖模块表
+def getDependMods():
+    modList = [];
+    if not os.path.exists("depends.mod"):
+        return modList;
+    with open("depends.mod", "r") as f:
+        for line in f.readlines():
+            mod = line.strip();
+            if mod not in modList:
+                modList.append(mod);
+    return modList;
 
-def getDepends(dependPath):
-    dependList = [];
-    if os.path.exists(dependPath):
-        with open(dependPath, "r") as f:
-            for line in f.readlines():
-                dependList.append(line.strip());
-    return dependList;
+# 获取已安装模块
+def getInstalledMods(pyExe):
+    modList = [];
+    ret = runCmd(f"{pyExe} -m pip freeze", funcName = "check_output");
+    for line in ret.decode().split("\n"):
+        line = line.strip();
+        if line:
+            modList.append(line.split("==")[0]);
+    return modList;
 
+# 获取未安装模块
+def getUninstalledMods(pyExe):
+    modList = getInstalledMods(pyExe); # 获取已安装模块
+    unInstallMods = [];
+    for mod in getDependMods():
+        if mod not in modList:
+            unInstallMods.append(mod);
+    return unInstallMods;
+
+# 安装模块
+def installMods(pyExe, mods):
+    failedMods = [];
+    for mod in mods:
+        if subprocess.call(f"{pyExe} -m pip install {mod}") != 0:
+            failedMods.append(mod);
+    return failedMods;
+
+# 安装依赖模块
+def installDepends(pyExe):
+    # 获取未安装模块
+    unInstallMods = getUninstalledMods(pyExe);
+    # 安装未安装模块
+    failedMods = installMods(pyExe, unInstallMods);
+    if len(failedMods) > 0:
+        print(f"{pipPath} install {failedMods} failed!");
+
+# 获取主函数文件
 def getMainFile(assetsPath):
     for name in os.listdir(assetsPath):
         fPath = os.path.join(assetsPath, name);
@@ -57,39 +69,12 @@ def getMainFile(assetsPath):
             return name;
     return "main.py";
 
-def getBuildFile(assetsPath):
-    for name in os.listdir(assetsPath):
-        fPath = os.path.join(assetsPath, name);
-        if os.path.isfile(fPath) and re.search("build\.?.*\.pyc", name):
-            return name;
-    return "build.py";
-
-def runCmd(cmd, cwd):
-    startupinfo = subprocess.STARTUPINFO();
-    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
-    startupinfo.wShowWindow = subprocess.SW_HIDE;
-    return subprocess.call(cmd, cwd = cwd, startupinfo = startupinfo);
-
-def getInstallDepends(pyExe, dependList = []):
-    depends = [];
-    for depend in dependList:
-        if runCmd(pyExe + " -m pip show " + depend, os.getcwd()) != 0:
-            depends.append(depend);
-    return depends;
-
 if __name__ == '__main__':
     # 获取python依赖路径
-    pyIncludePath = os.path.abspath(os.path.join(os.getcwd(), "include\python"));
-    # 获取python运行程序
-    configIniPath = os.path.abspath(os.path.join(os.getcwd(), "assets\common\config\ini\config.ini"));
-    pyExe = getPyexe(pyIncludePath, configIniPath);
-    # 获取依赖组件
-    dependsPath = os.path.abspath(os.path.join(os.getcwd(), "depend.mod"));
-    depends = getInstallDepends(pyExe, getDepends(dependsPath));
-    # 判断是否安装依赖模块
-    assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
-    if len(depends) > 0:
-        subprocess.call(" ".join([pyExe, getBuildFile(assetsPath), pyExe, " ".join(depends)]), cwd = assetsPath);
+    pyExe = os.path.abspath(os.path.join(os.getcwd(), "include", "python", "python.exe"));
+    # 安装依赖模块
+    installDepends(pyExe);
     # 运行main文件
+    assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
     runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
     runCmd(" ".join([os.path.join(runPath, "run.bat"), pyExe, assetsPath, getMainFile(assetsPath)]), os.getcwd());

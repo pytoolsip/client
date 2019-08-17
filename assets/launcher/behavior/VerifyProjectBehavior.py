@@ -18,7 +18,6 @@ def __getExposeData__():
 
 def __getExposeMethod__(DoType):
 	return {
-		"verifyPythonPath" : DoType.AddToRear,
 		"showEntryPyPathDialog" : DoType.AddToRear,
 		"verifyModuleMap" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
@@ -54,21 +53,15 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 
 	# 校验python环境
 	def verifyPythonPath(self, obj, _retTuple = None):
-		if _GG("g_PythonPath"):
-			# 重置为默认路径
-			_GG("ClientConfig").Config().Set("env", "python", _GG("g_PythonPath"));
+		if obj.verifyPythonEnvironment(pythonPath = _GG("g_PythonPath")):
 			return True;
-		if obj.verifyPythonEnvironment(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None)):
-			return True;
-		# 重置为空字符串
-		_GG("ClientConfig").Config().Set("env", "python", "");
 		return False, obj.showEntryPyPathDialog;
 
 	def showEntryPyPathDialog(self, obj, _retTuple = None):
 		entryDialog = wx.TextEntryDialog(obj, "未检测到python运行环境，请手动输入python运行程序路径：", "校验python环境失败！");
 		if entryDialog.ShowModal() == wx.ID_OK:
 			obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
-			_GG("ClientConfig").Config().Set("env", "python", entryDialog.GetValue()); # 保存python运行环境
+			# todo: 保存python运行环境
 			return True;
 		return False;
 
@@ -82,7 +75,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 			with open(jsonPath, "rb") as f:
 				moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
 				# 校验模块
-				installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
+				installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("g_PythonPath"));
 				for modName,count in moduleMap.items():
 					if count > 0:
 						if modName not in installedPkgDict:
@@ -104,10 +97,10 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 			# 安装模块
 			for modName in modNameList:
 				obj.showDetailTextCtrl(text = "正在安装" + modName + "模块...\n此过程可能持续10+秒，请耐心等候...");
-				obj.installPackageByPip(modName, pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
+				obj.installPackageByPip(modName, pythonPath = _GG("g_PythonPath"));
 			# 校验是否成功安装
 			failedNameList = [];
-			installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("ClientConfig").Config().Get("env", "python", None));
+			installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("g_PythonPath"));
 			for modName in modNameList:
 				if modName in installedPkgDict:
 					obj.showDetailTextCtrl(text = "安装“{}”模块成功。".format(modName));
@@ -118,18 +111,17 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 		return False;
 
 	def showUninstallModMsgDialog(self, obj, modNameList = [], _retTuple = None):
-		if _GG("g_PythonPath"):
-			messageDialog = wx.MessageDialog(obj, "发现有未使用的模块，是否确认卸载以下模块？\n" + "\n".join(modNameList), "校验import模块成功！", style = wx.YES_NO|wx.ICON_QUESTION);
-			if messageDialog.ShowModal() == wx.ID_YES:
-				obj.showDetailTextCtrl(text = "开始卸载未使用的模块...");
-				failedNameList = [];
-				for modName in modNameList:
-					if obj.uninstallPackageByPip(modName, pythonPath = _GG("g_PythonPath")):
-						obj.showDetailTextCtrl(text = "卸载“{}”模块成功。".format(modName));
-					else:
-						obj.showDetailTextCtrl(text = "卸载“{}”模块失败！".format(modName));
-						failedNameList.append(modName);
-				return len(failedNameList) == 0;
+		messageDialog = wx.MessageDialog(obj, "发现有未使用的模块，是否确认卸载以下模块？\n" + "\n".join(modNameList), "校验import模块成功！", style = wx.YES_NO|wx.ICON_QUESTION);
+		if messageDialog.ShowModal() == wx.ID_YES:
+			obj.showDetailTextCtrl(text = "开始卸载未使用的模块...");
+			failedNameList = [];
+			for modName in modNameList:
+				if obj.uninstallPackageByPip(modName, pythonPath = _GG("g_PythonPath")):
+					obj.showDetailTextCtrl(text = "卸载“{}”模块成功。".format(modName));
+				else:
+					obj.showDetailTextCtrl(text = "卸载“{}”模块失败！".format(modName));
+					failedNameList.append(modName);
+			return len(failedNameList) == 0;
 		return False;
 
 	# 校验Common版本
