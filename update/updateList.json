@@ -1,0 +1,10 @@
+{
+    "path" : [
+        "assets",
+        "run",
+        "template"
+    ],
+    "file" : [
+        "depends.mod"
+    ]
+}

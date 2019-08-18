@@ -3,3 +3,4 @@ grpcio
 protobuf
 grpcio-tools
 paramiko
+pycryptodome
