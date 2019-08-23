@@ -69,12 +69,19 @@ def getMainFile(assetsPath):
             return name;
     return "main.py";
 
+# 获取资源路径
+def getAssetsPath():
+    updatePath = os.path.abspath(os.path.join(os.getcwd(), "data", "update", "pytoolsip"));
+    if os.path.exists(updatePath):
+        return updatePath;
+    return os.path.abspath(os.path.join(os.getcwd(), "assets"));
+
 if __name__ == '__main__':
     # 获取python依赖路径
     pyExe = os.path.abspath(os.path.join(os.getcwd(), "include", "python", "python.exe"));
     # 安装依赖模块
     installDepends(pyExe);
     # 运行main文件
-    assetsPath = os.path.abspath(os.path.join(os.getcwd(), "assets"));
+    assetsPath = getAssetsPath();
     runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
-    runCmd(" ".join([os.path.join(runPath, "run.bat"), pyExe, assetsPath, getMainFile(assetsPath)]), os.getcwd());
+    runCmd(" ".join([os.path.join(runPath, "run.bat"), pyExe, assetsPath, getMainFile(assetsPath), os.getcwd()]), os.getcwd());

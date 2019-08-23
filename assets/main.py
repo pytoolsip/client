@@ -14,8 +14,13 @@ if CURRENT_PATH not in sys.path:
 from common._load import Loader;
 from launcher._load import LauncherLoader;
 
+# 获取工程路径
+pjPath = os.path.dirname(os.getcwd());
+if len(sys.argv) > 1:
+	pjPath = sys.argv[1];
+
 # 初始化窗口加载器
-Loader = Loader(os.getcwd());
+Loader = Loader(os.getcwd(), pjPath);
 Loader.loadGlobalInfo();
 Loader.verifyDefaultData();
 WindowLoader = Loader.getWindowLoader();
