@@ -118,14 +118,14 @@ class MainWindowLoader(WindowLoader):
 		self.MainViewCtr = CreateCtr(self._curPath + "/tool/MainView", self.__MainWindowUI);
 
 	def __syncData__(self):
-		# 同步ProjectConfig的name、version到tool.json
+		# 同步ProjectConfig的key、version、changelog到tool.json
 		configPath = self._curPath + "tool/tool.json";
 		toolConfig = {};
 		if os.path.exists(configPath):
 			with open(configPath, "r") as f:
 				toolConfig = json.loads(f.read());
-		# 更新name、version
-		for k in ["name", "version"]:
-			toolConfig[k] = ProjectConfig[k];
-		with open(configPath, "w+") as f:
+		# 更新key、version、changelog
+		for k in ["key", "version", "changelog"]:
+			toolConfig[k] = ProjectConfig.get(k, "null");
+		with open(configPath, "w") as f:
 			f.write(json.dumps(toolConfig));

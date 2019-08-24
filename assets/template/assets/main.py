@@ -10,7 +10,7 @@ from common._load import Loader;
 from MainWindowLoader import MainWindowLoader;
 
 # 初始化窗口加载器
-Loader = Loader(os.getcwd());
+Loader = Loader(os.getcwd(), os.path.dirname(os.getcwd()));
 Loader.loadGlobalInfo();
 Loader.verifyDefaultData();
 WindowLoader = MainWindowLoader(); # Loader.getWindowLoader();

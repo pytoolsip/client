@@ -7,4 +7,4 @@
 
 cd ..\assets\
 
-python main.py
+..\include\python\python.exe main.py
