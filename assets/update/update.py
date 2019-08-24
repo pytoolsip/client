@@ -15,40 +15,36 @@ def getJsonData(filePath):
 	return config;
 
 # 根据目录获取md5列表
-def getMd5Map(dirPath):
-	filePath = os.path.join(dirPath, "update", "fileMd5Info.json");
+def getMd5Map(tempPath, targetMd5Path):
+	tmpMd5, targetMd5 = {}, {};
+	fileName = "_file_md5_map_.json";
+	filePath = os.path.join(tempPath, fileName);
 	if os.path.exist(filePath):
-		cfg = getJsonData(filePath);
-		return cfg.get("md5Map", {});
-	return {};
+		tmpMd5 = getJsonData(filePath);
+	filePath = os.path.join(targetMd5Path, fileName);
+	if os.path.exist(filePath):
+		targetMd5 = getJsonData(filePath);
+	return tmpMd5, targetMd5;
 
 # 根据目录处理文件
-def dealFileByPaths(srcPath, tarPath):
-	srcMd5Map, tarMd5Map = getMd5Map(srcPath), getMd5Map(tarPath);
-	for k,v in srcMd5Map.items():
-		if k not in tarMd5Map:
-			# 移除不需要的文件
-			if os.path.exist(os.path.join(srcPath, k)):
-				os.remove(os.path.join(srcPath, k));
-		elif tarMd5Map[k] == v:
-			tarMd5Map.pop(k);
-	# 拷贝并覆盖
-	copyFileList(srcPath, tarPath, fileList = tarMd5Map.keys());
-
-# 拷贝文件列表
-def copyFileList(srcPath, tarPath, fileList = []):
-	for path in fileList:
-		if os.path.exist(os.path.join(tarPath, path)):
-			shutil.copyfile(os.path.join(tarPath, path), os.path.join(srcPath, path));
+def copyFileByMd5s(tempPath, targetMd5Path):
+	tmpMd5Map, tgMd5Map = getMd5Map(tempPath, targetMd5Path);
+	for k,v in tmpMd5Map.items():
+		tmpFile, tgFile = os.path.join(tempPath, k), os.path.join(targetMd5Path, k);
+		if os.path.exist(tmpFile) and v == tgMd5Map.get(k, ""):
+			continue; # 已存在且md5值一样，则跳过
+		if not os.path.exist(tgFile):
+			return False; # 不存在目标文件，则更新失败
+		shutil.copyfile(tgFile, tmpFile); # 拷贝文件
+	return True;
 
 if __name__ == '__main__':
-	if len(sys.argv) <= 2:
+	if len(sys.argv) <= 3:
 		return;
 	# 根据md5数据处理文件
-	srcPath, tarPath = sys.argv[1], sys.argv[2];
-	dealFileByPaths(srcPath, tarPath);
-	# 拷贝扩展文件
-	exFileList = [];
-	if len(sys.argv) > 2:
-		exFileList = json.loads(sys.argv[3]);
-	copyFileList(srcPath, tarPath, fileList = exFileList);
+	tempPath, targetPath, targetMd5Path = sys.argv[1], sys.argv[2], sys.argv[3];
+	if copyFileByMd5s(tempPath, targetMd5Path):
+		shutil.copytree(tempPath, targetPath); # 更新成功，拷贝文件夹
+		shutil.rmtree(tempPath); # 删除临时更新文件夹
+	else:
+		sys.exit(1); # 更新失败，退出程序
