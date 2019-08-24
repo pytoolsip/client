@@ -8,11 +8,10 @@ import shutil;
 
 # 获取json数据
 def getJsonData(filePath):
-	config = {};
-	with open(filePath, "rb") as f:
-		config = json.loads(f.read().decode("utf-8", "ignore"));
-		f.close();
-	return config;
+	if os.path.exists(filePath):
+		with open(filePath, "r") as f:
+			return json.loads(f.read());
+	return {};
 
 # 根据目录获取md5列表
 def getMd5Map(tempPath, targetMd5Path):
@@ -38,12 +37,47 @@ def copyFileByMd5s(tempPath, targetMd5Path):
 		shutil.copyfile(tgFile, tmpFile); # 拷贝文件
 	return True;
 
+# 获取依赖模块表
+def getDependMods(assetsPath):
+	modList, modFile = [], os.path.join(assetsPath, "depends.mod");
+	if not os.path.exists(modFile):
+		return modList;
+	with open(modFile, "r") as f:
+		for line in f.readlines():
+			mod = line.strip();
+			if mod not in modList:
+				modList.append(mod);
+	return modList;
+
+# 获取依赖模块表
+def diffDependMods(tempPath, targetMd5Path):
+	modList = [];
+	tempModList, tgtMd5List = getDependMods(tempPath), getDependMods(targetMd5Path);
+	for mod in tempModList:
+		if mod not in tgtMd5List:
+			modList.append(mod);
+	return modList;
+
+# 获取依赖模块列表
+def checkDependMapJson(tempPath, targetMd5Path, dependMapFile):
+	isChange, dependMap = False, getJsonData(dependMapFile);
+	for mod in diffDependMods(tempPath, targetMd5Path):
+		if mod not in dependMap:
+			dependMap[mod] = 1;
+			isChange = True;
+	if isChange:
+		with open(dependMapFile, "w") as f:
+			f.write(json.dumps(dependMap));
+	return dependMap;
+
+
 if __name__ == '__main__':
-	if len(sys.argv) <= 3:
+	if len(sys.argv) <= 4:
 		return;
 	# 根据md5数据处理文件
-	tempPath, targetPath, targetMd5Path = sys.argv[1], sys.argv[2], sys.argv[3];
+	tempPath, targetPath, targetMd5Path, dependMapFile = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4];
 	if copyFileByMd5s(tempPath, targetMd5Path):
+		checkDependMapJson(tempPath, targetMd5Path, dependMapFile); # 检测依赖模块配置
 		shutil.copytree(tempPath, targetPath); # 更新成功，拷贝文件夹
 		shutil.rmtree(tempPath); # 删除临时更新文件夹
 	else:
