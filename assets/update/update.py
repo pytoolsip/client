@@ -4,7 +4,7 @@
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2019-05-31 17:25:29
 import os, sys;
-import shutil;
+import shutil, json;
 
 # 获取json数据
 def getJsonData(filePath):
@@ -37,7 +37,7 @@ def copyFileByMd5s(tempPath, targetMd5Path):
 		shutil.copyfile(tgFile, tmpFile); # 拷贝文件
 	return True;
 
-# 获取依赖模块表
+# 获取依赖模块列表
 def getDependMods(assetsPath):
 	modList, modFile = [], os.path.join(assetsPath, "depends.mod");
 	if not os.path.exists(modFile):
@@ -49,16 +49,16 @@ def getDependMods(assetsPath):
 				modList.append(mod);
 	return modList;
 
-# 获取依赖模块表
+# 获取不同的依赖模块列表
 def diffDependMods(tempPath, targetMd5Path):
 	modList = [];
-	tempModList, tgtMd5List = getDependMods(tempPath), getDependMods(targetMd5Path);
+	tempModList, tgtModList = getDependMods(tempPath), getDependMods(targetMd5Path);
 	for mod in tempModList:
-		if mod not in tgtMd5List:
+		if mod not in tgtModList:
 			modList.append(mod);
 	return modList;
 
-# 获取依赖模块列表
+# 检测依赖模块列表
 def checkDependMapJson(tempPath, targetMd5Path, dependMapFile):
 	isChange, dependMap = False, getJsonData(dependMapFile);
 	for mod in diffDependMods(tempPath, targetMd5Path):
