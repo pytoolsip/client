@@ -6,6 +6,4 @@ set mainpath=%2
 set mainfile=%3
 set pjpath=%4
 
-cd /d %mainpath%
-
-%pyexe% %mainfile% %pjpath%
+start /d %mainpath% %pyexe% %mainfile% %pjpath%

@@ -18,7 +18,6 @@ def __getExposeData__():
 
 def __getExposeMethod__(DoType):
 	return {
-		"showEntryPyPathDialog" : DoType.AddToRear,
 		"verifyModuleMap" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
 		"verifyIPVersion" : DoType.AddToRear,
@@ -51,23 +50,9 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	# 	_GG("Log").i(obj._className_);
 	# 	pass;
 
-	# 校验python环境
-	def verifyPythonPath(self, obj, _retTuple = None):
-		if obj.verifyPythonEnvironment(pythonPath = _GG("g_PythonPath")):
-			return True;
-		return False, obj.showEntryPyPathDialog;
-
-	def showEntryPyPathDialog(self, obj, _retTuple = None):
-		entryDialog = wx.TextEntryDialog(obj, "未检测到python运行环境，请手动输入python运行程序路径：", "校验python环境失败！");
-		if entryDialog.ShowModal() == wx.ID_OK:
-			obj.showDetailTextCtrl(text = "正在设置python运行环境: {}".format(entryDialog.GetValue()));
-			# todo: 保存python运行环境
-			return True;
-		return False;
-
 	# 校验import模块
 	def verifyModuleMap(self, obj, _retTuple = None):
-		jsonPath = _GG("g_AssetsPath") + "launcher/json/importMap.json";
+		jsonPath = _GG("g_DataPath") + "depend_map.json";
 		if os.path.exists(jsonPath):
 			modNameList = [];
 			uninstallNameList = [];
@@ -83,10 +68,9 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 					else:
 						if modName not in installedPkgDict:
 							uninstallNameList.append(modName);
-				f.close();
 			if len(modNameList) == 0:
 				if len(uninstallNameList) > 0:
-					self.showUninstallModMsgDialog(obj);
+					wx.CallAfter(self.showUninstallModMsgDialog, obj, uninstallNameList);
 				return True;
 			else:
 				return False, obj.showInstallModMsgDialog, modNameList;
