@@ -73,7 +73,7 @@ def checkDependMapJson(tempPath, targetMd5Path, dependMapFile):
 
 if __name__ == '__main__':
 	if len(sys.argv) <= 4:
-		return;
+		sys.exit(1);
 	# 根据md5数据处理文件
 	tempPath, targetPath, targetMd5Path, dependMapFile = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4];
 	if copyFileByMd5s(tempPath, targetMd5Path):
