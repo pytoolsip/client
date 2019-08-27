@@ -4,7 +4,14 @@
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-04-20 00:00:41
 
-import os,re;
+import os,re,subprocess;
+
+# 无日志打印运行命令
+def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
+    startupinfo = subprocess.STARTUPINFO();
+    startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
+    startupinfo.wShowWindow = subprocess.SW_HIDE;
+    return getattr(subprocess, funcName)(cmd, cwd = cwd, startupinfo = startupinfo, **argDict);
 
 # 获取对应名称的脚本
 def getFile(assetsPath, name):
@@ -26,6 +33,7 @@ if __name__ == '__main__':
     pyExe = os.path.abspath(os.path.join(os.getcwd(), "include", "python", "python.exe"));
     # 获取资源路径
     assetsPath = getAssetsPath();
-    # 运行run.vbs文件
+    # 运行start.bat文件
     runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
-    os.system(" ".join(["start /d", runPath, "run.vbs", pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), os.getcwd()]));
+    startBat = os.path.join(runPath, "start.bat");
+    runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), os.getcwd(), runPath]));
