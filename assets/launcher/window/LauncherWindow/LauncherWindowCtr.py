@@ -204,6 +204,14 @@ class LauncherWindowCtr(object):
 	# 校验工程
 	def verifyProject(self):
 		self.addLauncherEvent({
+			"scheduleTask" : self.getUI().verifyData,
+			"text" : "正在校验数据",
+			"failInfo" : {
+				"text" : "正在校验数据失败！",
+				# "failCallback" : self.showInstallModMsgDialog,
+			},
+		});
+		self.addLauncherEvent({
 			"scheduleTask" : self.getUI().verifyModuleMap,
 			"text" : "正在校验工程所需模块",
 			"failInfo" : {

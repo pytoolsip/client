@@ -7,6 +7,7 @@ import sys;
 import os;
 import wx;
 import json;
+import shutil;
 
 from _Global import _GG;
 from function.base import *;
@@ -21,6 +22,7 @@ def __getExposeMethod__(DoType):
 		"verifyModuleMap" : DoType.AddToRear,
 		"showInstallModMsgDialog" : DoType.AddToRear,
 		"verifyIPVersion" : DoType.AddToRear,
+		"verifyData" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -112,4 +114,19 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	def verifyIPVersion(self, obj, _retTuple = None):
 		if hasattr(obj, "checkUpdateIP"):
 			obj.checkUpdateIP();
+		return True;
+
+	# 校验数据
+	def verifyData(self, obj, _retTuple = None):
+		tempPath = _GG("g_DataPath")+"temp";
+		if os.path.exists(tempPath):
+			for name in os.listdir(tempPath):
+				filePath = os.path.join(tempPath, name);
+				try:
+					if os.path.isfile(filePath):
+						os.remove(filePath);
+					else:
+						shutil.rmtree(filePath);
+				except Exception as e:
+					_GG("Log").e(f"Failed to remove filePath({filePath})! Err({e}).");
 		return True;
