@@ -16,7 +16,7 @@ Set ws = CreateObject("Wscript.Shell")
 
 ' 校验依赖模块
 Dim args1
-args1 = pyexe+assetspath+buildfile
+args1 = pyexe+assetspath+buildfile+pjpath
 if ws.Run("cmd /c build.bat"+args1+" -check", 0, True) = 2 Then
     ws.run "cmd /c build.bat"+args1, 1, True
 End If

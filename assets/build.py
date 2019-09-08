@@ -1,4 +1,4 @@
-import sys,os,subprocess;
+import sys,os,subprocess,json;
 
 # 无日志打印运行命令
 def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
@@ -18,6 +18,19 @@ def getDependMods():
             if mod not in modList:
                 modList.append(mod);
     return modList;
+
+# 初始化依赖信息文件
+def initDependMap(pjPath):
+    dirPath = os.path.join(pjPath, "data");
+    filePath = os.path.join(dirPath, "depend_map.json");
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath);
+    if not os.path.exists(filePath):
+        dependMap = {};
+        for mod in getDependMods():
+            dependMap[mod] = 1;
+        with open(filePath, "w") as f:
+            f.write(json.dumps(dependMap));
 
 # 获取已安装模块
 def getInstalledMods(pyExe):
@@ -47,11 +60,13 @@ def installMods(pyExe, mods):
     return failedMods;
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         sys.exit(1); # 参数错误，直接退出
-    pyExe, isCheck = sys.argv[1], False;
-    if len(sys.argv) > 2:
-        isCheck = sys.argv[2]=="-check"
+    pyExe, pjPath, isCheck = sys.argv[1], sys.argv[2], False;
+    if len(sys.argv) > 3:
+        isCheck = sys.argv[3]=="-check";
+    # 初始化依赖信息文件
+    initDependMap(pjPath);
     # 获取未安装模块
     unInstallMods = getUninstalledMods(pyExe);
     if isCheck and len(unInstallMods) > 0:
