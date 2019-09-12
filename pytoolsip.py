@@ -4,7 +4,7 @@
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-04-20 00:00:41
 
-import os,re,subprocess;
+import sys,os,re,subprocess;
 
 # 无日志打印运行命令
 def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
@@ -22,18 +22,35 @@ def getFile(assetsPath, name):
     return f"{name}.py";
 
 # 获取资源路径
-def getAssetsPath():
-    updatePath = os.path.abspath(os.path.join(os.getcwd(), "data", "update", "pytoolsip"));
-    if os.path.exists(updatePath):
-        return updatePath;
-    return os.path.abspath(os.path.join(os.getcwd(), "assets"));
+def getAssetsPath(cwd):
+    assetsPath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip", "assets"));
+    if os.path.exists(assetsPath):
+        return assetsPath;
+    return os.path.abspath(os.path.join(cwd, "assets"));
+
+# 获取pytoolsip路径
+def getExePath(cwd):
+    exePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip", "pytoolsip.exe"));
+    if os.path.exists(exePath):
+        return exePath;
+    return "";
 
 if __name__ == '__main__':
-    # 获取python依赖路径
-    pyExe = os.path.abspath(os.path.join(os.getcwd(), "include", "python", "python.exe"));
-    # 获取资源路径
-    assetsPath = getAssetsPath();
-    # 运行start.bat文件
-    runPath = os.path.abspath(os.path.join(os.getcwd(), "run"));
-    startBat = os.path.join(runPath, "start.bat");
-    runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), os.getcwd(), runPath]));
+    cwd = os.getcwd();
+    # 获取pytoolsip程序路径
+    exePath = getExePath(cwd);
+    if exePath:
+        runCmd(" ".join([exePath, cwd]));
+    else:
+        # 获取工程路径
+        if len(sys.argv) >= 2:
+            if os.path.exists(sys.argv[1]):
+                cwd = sys.argv[1];
+        # 获取python依赖路径
+        pyExe = os.path.abspath(os.path.join(cwd, "include", "python", "python.exe"));
+        # 获取资源路径
+        assetsPath = getAssetsPath(cwd);
+        # 运行start.bat文件
+        runPath = os.path.abspath(os.path.join(cwd, "run"));
+        startBat = os.path.join(runPath, "start.bat");
+        runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), cwd, runPath]));

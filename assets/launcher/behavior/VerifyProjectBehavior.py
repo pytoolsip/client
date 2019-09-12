@@ -113,7 +113,7 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 	# 校验Common版本
 	def verifyIPVersion(self, obj, _retTuple = None):
 		if hasattr(obj, "checkUpdateIP"):
-			obj.checkUpdateIP();
+			return obj.checkUpdateIP();
 		return True;
 
 	# 校验数据
