@@ -112,8 +112,11 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 
 	# 校验Common版本
 	def verifyIPVersion(self, obj, _retTuple = None):
-		if hasattr(obj, "checkUpdateIP"):
-			return obj.checkUpdateIP();
+		ret, version = obj.requestUpdateIP();
+		if ret:
+			messageDialog = wx.MessageDialog(obj, "检测有更新版本，是否确认更新？", "检测平台版本", style = wx.YES_NO|wx.ICON_QUESTION);
+			if messageDialog.ShowModal() == wx.ID_YES:
+				obj.updateIP(version);
 		return True;
 
 	# 校验数据
