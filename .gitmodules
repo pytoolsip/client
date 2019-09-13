@@ -1,3 +1,6 @@
 [submodule "assets/common"]
 	path = assets/common
 	url = https://github.com/pytoolsip/common
+[submodule "assets/update"]
+	path = assets/update
+	url = https://github.com/pytoolsip/update.git
