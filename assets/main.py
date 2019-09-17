@@ -22,6 +22,7 @@ if len(sys.argv) > 1:
 # 初始化窗口加载器
 Loader = Loader(os.getcwd(), pjPath);
 Loader.loadGlobalInfo();
+Loader.initGlobalClass();
 Loader.verifyDefaultData();
 WindowLoader = Loader.getWindowLoader();
 
