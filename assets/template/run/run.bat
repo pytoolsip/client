@@ -5,6 +5,11 @@
 
 @echo off && setlocal enabledelayedexpansion
 
+set pyexe=%1
+set mainfile=%2
+
 cd ..\assets\
 
-..\include\python\python.exe main.py
+%pyexe% %mainfile%
+
+pause
