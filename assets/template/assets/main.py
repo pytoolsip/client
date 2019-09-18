@@ -3,14 +3,18 @@
 # @Date:   2018-10-08 20:56:43
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-03-16 23:42:01
-
-import os;
+import sys,os;
+# 当前文件位置
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
+# 添加搜索路径
+if CURRENT_PATH not in sys.path:
+	sys.path.append(CURRENT_PATH);
 
 from common._load import Loader;
 from MainWindowLoader import MainWindowLoader;
 
 # 初始化窗口加载器
-Loader = Loader(os.getcwd(), os.path.dirname(os.getcwd()));
+Loader = Loader(CURRENT_PATH, os.path.dirname(CURRENT_PATH));
 Loader.loadGlobalInfo();
 Loader.verifyDefaultData();
 WindowLoader = MainWindowLoader(); # Loader.getWindowLoader();

@@ -15,12 +15,12 @@ from common._load import Loader;
 from launcher._load import LauncherLoader;
 
 # 获取工程路径
-pjPath = os.path.dirname(os.getcwd());
+pjPath = os.path.dirname(CURRENT_PATH);
 if len(sys.argv) > 1:
 	pjPath = sys.argv[1];
 
 # 初始化窗口加载器
-Loader = Loader(os.getcwd(), pjPath);
+Loader = Loader(CURRENT_PATH, pjPath);
 Loader.loadGlobalInfo();
 Loader.initGlobalClass();
 Loader.verifyDefaultData();
