@@ -8,5 +8,5 @@ ProjectConfig = {
 	"name" : "工具开发模板", # 工具名称
 	"version" : "1.0.0", # 工具版本
 	"winSize" : (960,640), # 模板窗口默认大小
-	"isOpenLogWin" : True, # 是否打开日志窗口
+	"isOpenLogWin" : False, # 是否打开日志窗口
 }
