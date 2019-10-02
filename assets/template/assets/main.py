@@ -16,6 +16,7 @@ from MainWindowLoader import MainWindowLoader;
 # 初始化窗口加载器
 Loader = Loader(CURRENT_PATH, os.path.dirname(CURRENT_PATH));
 Loader.loadGlobalInfo();
+Loader.lockGlobal();
 Loader.verifyDefaultData();
 WindowLoader = MainWindowLoader(); # Loader.getWindowLoader();
 

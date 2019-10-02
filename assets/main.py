@@ -23,6 +23,7 @@ if len(sys.argv) > 1:
 Loader = Loader(CURRENT_PATH, pjPath);
 Loader.loadGlobalInfo();
 Loader.initGlobalClass();
+Loader.lockGlobal();
 Loader.verifyDefaultData();
 WindowLoader = Loader.getWindowLoader();
 
