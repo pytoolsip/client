@@ -7,8 +7,9 @@ End If
 Dim pyexe,mainfile
 pyexe = " " + WScript.Arguments(0)
 mainfile = " " + WScript.Arguments(1)
+buildfile = " " + WScript.Arguments(2)
 
 ' 获取Wscript脚本对象
 Set ws = CreateObject("Wscript.Shell")
 ' 启动运行程序
-ws.run "cmd /c run.bat"+pyexe+mainfile
+ws.run "cmd /c run.bat"+pyexe+mainfile+buildfile

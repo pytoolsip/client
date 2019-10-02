@@ -7,9 +7,12 @@
 
 set pyexe=%1
 set mainfile=%2
+set buildfile=%3
 
 cd ..\assets\
 
-%pyexe% %mainfile%
+%pyexe% %buildfile% %pyexe%
+
+%pyexe% %mainfile% %pyexe%
 
 pause

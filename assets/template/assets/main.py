@@ -16,6 +16,8 @@ from MainWindowLoader import MainWindowLoader;
 # 初始化窗口加载器
 Loader = Loader(CURRENT_PATH, os.path.dirname(CURRENT_PATH));
 Loader.loadGlobalInfo();
+if len(sys.argv) > 1:
+	Loader.updatePyPath(os.path.dirname(sys.argv[1])); # 更新python路径
 Loader.lockGlobal();
 Loader.verifyDefaultData();
 WindowLoader = MainWindowLoader(); # Loader.getWindowLoader();
