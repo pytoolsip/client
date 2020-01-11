@@ -52,12 +52,35 @@ def getUninstalledMods(pyExe):
     return unInstallMods;
 
 # 安装模块
-def installMods(pyExe, mods):
+def installMods(pyExe, mods, pjPath):
     failedMods = [];
+    pii = getPipInstallImage(pjPath);
     for mod in mods:
-        if subprocess.call(f"{pyExe} -m pip install {mod}") != 0:
+        cmd = getPipInstallCmd(pyExe, mod, pii);
+        if subprocess.call(cmd) != 0:
             failedMods.append(mod);
     return failedMods;
+
+# 获取pip安装镜像
+def getPipInstallImage(pjPath):
+    settingCfg = {};
+    cfgPath = os.path.join(pjPath, "data", "config", "setting_cfg.json");
+    if os.path.exists(cfgPath):
+        with open(cfgPath, "rb") as f:
+            settingCfg = json.loads(f.read().decode("utf-8"));
+    return settingCfg.get("pip_install_image", "");
+
+# 获取pip安装命令
+def getPipInstallCmd(pyExe, mod, pii):
+    cmd = os.path.abspath(pyExe) + " -m pip install " + mod;
+    # 处理镜像
+    if pii:
+        cmd += f" -i {pii}";
+        mtObj = re.match("^https?://(.*)/.*$", pii);
+        if mtObj:
+            host = mtObj.group(1);
+            cmd += f" --trusted-host {host}";
+    return cmd;
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
@@ -72,6 +95,6 @@ if __name__ == '__main__':
     if isCheck and len(unInstallMods) > 0:
         sys.exit(2); # 有未安装模块
     # 安装未安装模块
-    failedMods = installMods(pyExe, unInstallMods);
+    failedMods = installMods(pyExe, unInstallMods, pjPath);
     if len(failedMods) > 0:
         print(f"{pyExe} -m pip install {failedMods} failed!");
