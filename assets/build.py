@@ -1,4 +1,4 @@
-import sys,os,subprocess,json;
+import sys,os,subprocess,json,re;
 
 # 无日志打印运行命令
 def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
