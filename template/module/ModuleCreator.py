@@ -30,7 +30,7 @@ class CreateModuleObj(object):
 			if isCreateFile == True:
 				modFullName = self.getModuleFullName();
 				if not os.path.exists(os.path.join(self.__modulePath, modFullName)):
-					return False, "Error! Invalid module!";
+					return False, "invalid";
 				self.createFilesByRecursion(targetFilePath, targetName, self.__modulePath, modFullName);
 			return isCreateFile, targetFilePath;
 		return False, "";
@@ -94,7 +94,7 @@ class CreateModuleObj(object):
 			targetFileFulName += ".py";
 		if os.path.exists(targetFileFulName):
 			if not self.isCoverExistedMod():
-				return False, "";
+				return False, "existed";
 		# 若文件所在路径不存在，则创建相应路径
 		if not os.path.exists(targetModPath):
 			os.makedirs(targetModPath);
