@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 00:00:41
+# @Last Modified time: 2020-02-02 21:53:01
 
 import sys,os,re,subprocess;
 
@@ -21,19 +21,21 @@ def getFile(assetsPath, name):
             return fn;
     return f"{name}.py";
 
-# 获取资源路径
-def getAssetsPath(cwd):
-    assetsPath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip", "assets"));
-    if os.path.exists(assetsPath):
-        return assetsPath;
-    return os.path.abspath(os.path.join(cwd, "assets"));
-
 # 获取pytoolsip路径
 def getExePath(cwd):
     exePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip", "pytoolsip.exe"));
     if os.path.exists(exePath):
         return exePath;
     return "";
+
+# 获取依赖路径
+def getDependPath(cwd, path):
+    updatePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
+    if os.path.exists(updatePath):
+        dependPath = os.path.abspath(os.path.join(updatePath, path));
+        if os.path.exists(dependPath):
+            return dependPath;
+    return os.path.abspath(os.path.join(cwd, path));
 
 if __name__ == '__main__':
     cwd = os.getcwd();
@@ -47,10 +49,10 @@ if __name__ == '__main__':
             if os.path.exists(sys.argv[1]):
                 cwd = sys.argv[1];
         # 获取python依赖路径
-        pyExe = os.path.abspath(os.path.join(cwd, "include", "python", "python.exe"));
+        pyExe = os.path.abspath(getDependPath(cwd, "include/python/python.exe"));
         # 获取资源路径
-        assetsPath = getAssetsPath(cwd);
+        assetsPath = getDependPath(cwd, "assets");
         # 运行start.bat文件
-        runPath = os.path.abspath(os.path.join(cwd, "run"));
+        runPath = os.path.abspath(getDependPath(cwd, "run"));
         startBat = os.path.join(runPath, "start.bat");
         runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), cwd, runPath]));
