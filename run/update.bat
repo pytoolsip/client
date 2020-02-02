@@ -5,5 +5,6 @@ set updatefile=%2
 set version=%3
 set projectpath=%4
 set updatepath=%5
+set runpath=%6
 
-%pyexe% %updatefile% %version% %projectpath% %updatepath%
+start /d %runpath% update.vbs %pyexe% %updatefile% %version% %projectpath% %updatepath%
