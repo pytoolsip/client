@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 21:53:01
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 12:51:54
 
 import sys,os,re,subprocess;
 
@@ -30,11 +30,13 @@ def getExePath(cwd):
 
 # 获取依赖路径
 def getDependPath(cwd, path):
-    updatePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
-    if os.path.exists(updatePath):
-        dependPath = os.path.abspath(os.path.join(updatePath, path));
-        if os.path.exists(dependPath):
-            return dependPath;
+    # 判断是否存在更新时的temp文件夹【存在表示更新失败，不能使用更新文件】
+    if not os.path.exists(os.path.join(cwd, "data", "update", "temp_pytoolsip")):
+        updatePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
+        if os.path.exists(updatePath):
+            dependPath = os.path.abspath(os.path.join(updatePath, path));
+            if os.path.exists(dependPath):
+                return dependPath;
     return os.path.abspath(os.path.join(cwd, path));
 
 if __name__ == '__main__':
