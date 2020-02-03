@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 12:51:54
+# @Last Modified time: 2020-02-03 17:00:25
 
 import sys,os,re,subprocess;
 
@@ -21,12 +21,14 @@ def getFile(assetsPath, name):
             return fn;
     return f"{name}.py";
 
-# 获取pytoolsip路径
-def getExePath(cwd):
-    exePath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip", "pytoolsip.exe"));
-    if os.path.exists(exePath):
-        return exePath;
-    return "";
+# 运行pytoolsip程序
+def runExeByPath(cwd):
+    exeName = "pytoolsip.exe";
+    ptipPath =os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
+    if os.path.exists(os.path.join(ptipPath, exeName)):
+        runCmd(" ".join([exeName, cwd]), cwd = ptipPath);
+        return True;
+    return False;
 
 # 获取依赖路径
 def getDependPath(cwd, path):
@@ -41,11 +43,7 @@ def getDependPath(cwd, path):
 
 if __name__ == '__main__':
     cwd = os.getcwd();
-    # 获取pytoolsip程序路径
-    exePath = getExePath(cwd);
-    if exePath:
-        runCmd(" ".join([exePath, cwd]));
-    else:
+    if not runExeByPath(cwd):
         # 获取工程路径
         if len(sys.argv) >= 2:
             if os.path.exists(sys.argv[1]):
