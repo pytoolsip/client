@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2020-02-05 09:58:17
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-05 21:22:23
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 01:00:41
 
 ChangeLog = {
+	"1.0.19" : {
+		"time" : "2020-02-07 00:59:12",
+		"log" : """
+			feat:新增标签页数限制功能。
+			refactor:修复工具树右键菜单异常问题。
+		""",
+	},
 	"1.0.18" : {
 		"time" : "2020-02-05 21:20:00",
 		"log" : """
