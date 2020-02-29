@@ -29,7 +29,7 @@ class LauncherWindowUI(wx.Frame):
 		pass;
 
 	def initIcon(self):
-		self.SetIcon(wx.Icon(_GG("g_CommonPath")+"res/img/dzjh.ico", wx.BITMAP_TYPE_ICO));
+		self.SetIcon(wx.Icon(_GG("g_CommonPath")+"res/img/pytoolsip.ico", wx.BITMAP_TYPE_ICO));
 
 	def createViewCtrs(self):
 		self.getCtr().createCtrByKey("LauncherGaugeView", _GG("g_AssetsPath") + "launcher/view/LauncherGaugeView", params = {"size" : (self.GetSize()[0], -1)}); # , parent = self, params = {}
