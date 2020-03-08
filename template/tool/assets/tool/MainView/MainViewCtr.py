@@ -10,6 +10,10 @@ from _Global import _GG;
 
 from MainViewUI import *;
 
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)); # 当前文件目录
+
+require(GetPathByRelativePath("../", CURRENT_PATH), "_loadtool"); # 加载逻辑
+
 def getRegisterEventMap(G_EVENT):
 	return {
 		# G_EVENT.TO_UPDATE_VIEW : "updateView",
@@ -20,7 +24,7 @@ class MainViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(MainViewCtr, self).__init__();
 		self._className_ = MainViewCtr.__name__;
-		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
+		self._curPath = CURRENT_PATH.replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
