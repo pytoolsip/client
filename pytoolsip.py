@@ -17,7 +17,7 @@ def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
 def getFile(assetsPath, name):
     for fn in os.listdir(assetsPath):
         fPath = os.path.join(assetsPath, fn);
-        if os.path.isfile(fPath) and re.search(f"{name}\.?.*\.pyc", fn):
+        if os.path.isfile(fPath) and re.search(f"^{name}\.?.*\.pyc", fn):
             return fn;
     return f"{name}.py";
 

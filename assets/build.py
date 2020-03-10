@@ -86,7 +86,7 @@ def getPipInstallCmd(pyExe, mod, pii):
 def upgradePip(pyExe, pjPath):
     pii = getPipInstallImage(pjPath);
     cmd = getPipInstallCmd(pyExe, "--upgrade pip", pii);
-    subprocess.call(cmd);
+    runCmd(cmd);
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         sys.exit(2); # 有未安装模块
     # 升级pip安装命令
     if len(unInstallMods) > 0:
-        upgradePip();
+        upgradePip(pyExe, pjPath);
     # 安装未安装模块
     failedMods = installMods(pyExe, unInstallMods, pjPath);
     if len(failedMods) > 0:
