@@ -82,6 +82,12 @@ def getPipInstallCmd(pyExe, mod, pii):
             cmd += f" --trusted-host {host}";
     return cmd;
 
+# 升级pip安装命令
+def upgradePip(pyExe, pjPath):
+    pii = getPipInstallImage(pjPath);
+    cmd = getPipInstallCmd(pyExe, "--upgrade pip", pii);
+    subprocess.call(cmd);
+
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         sys.exit(1); # 参数错误，直接退出
@@ -94,6 +100,9 @@ if __name__ == '__main__':
     unInstallMods = getUninstalledMods(pyExe);
     if isCheck and len(unInstallMods) > 0:
         sys.exit(2); # 有未安装模块
+    # 升级pip安装命令
+    if len(unInstallMods) > 0:
+        upgradePip();
     # 安装未安装模块
     failedMods = installMods(pyExe, unInstallMods, pjPath);
     if len(failedMods) > 0:
