@@ -23,6 +23,8 @@ def getDependMods():
 # 获取已安装模块
 def getInstalledMods(pyExe):
     modList = [];
+    if os.path.isfile(pyExe):
+        pyExe = os.path.abspath(pyExe);
     ret = runCmd(f"{pyExe} -m pip freeze", funcName = "check_output");
     for line in ret.decode().split("\n"):
         line = line.strip();
@@ -50,7 +52,9 @@ def installMods(pyExe, mods, pii = ""):
 
 # 获取pip安装命令
 def getPipInstallCmd(pyExe, mod, pii = ""):
-    cmd = os.path.abspath(pyExe) + " -m pip install " + mod;
+    if os.path.isfile(pyExe):
+        pyExe = os.path.abspath(pyExe);
+    cmd = f"{pyExe} -m pip install {mod}";
     # 处理镜像
     if pii:
         cmd += f" -i {pii}";
@@ -70,6 +74,9 @@ if __name__ == '__main__':
     # 获取未安装模块
     unInstallMods = getUninstalledMods(pyExe);
     # 安装未安装模块
-    failedMods = installMods(pyExe, unInstallMods, pii);
-    if len(failedMods) > 0:
-        print(f"{pyExe} -m pip install {failedMods} failed!");
+    if len(unInstallMods) > 0:
+        print(f"Start installing dependent modules -> {unInstallMods}...");
+        failedMods = installMods(pyExe, unInstallMods, pii);
+        if len(failedMods) > 0:
+            print(f"{pyExe} -m pip install {failedMods} failed!");
+    pass;
