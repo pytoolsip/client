@@ -9,14 +9,15 @@ def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
 
 # 获取依赖模块表
 def getDependMods():
-    modList, modFile = [], "tool/depends.mod";
-    if not os.path.exists(modFile):
-        return modList;
-    with open(modFile, "r") as f:
-        for line in f.readlines():
-            mod = line.strip();
-            if mod not in modList:
-                modList.append(mod);
+    modList, modFileList = [], ["tool/depends.mod", "common/depends.mod"];
+    for modFile in modFileList:
+        if not os.path.exists(modFile):
+            continue;
+        with open(modFile, "r") as f:
+            for line in f.readlines():
+                mod = line.strip();
+                if mod not in modList:
+                    modList.append(mod);
     return modList;
 
 # 获取已安装模块
@@ -59,22 +60,16 @@ def getPipInstallCmd(pyExe, mod, pii = ""):
             cmd += f" --trusted-host {host}";
     return cmd;
 
-# 升级pip安装命令
-def upgradePip(pyExe, pii = ""):
-    cmd = getPipInstallCmd(pyExe, "--upgrade pip", pii);
-    return subprocess.call(cmd) == 0;
-
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         sys.exit(1); # 参数错误，直接退出
-    pyExe = sys.argv[1];
+    pyExe = sys.argv[1]; # python程序
+    pii = ""; # pip安装镜像
     if len(sys.argv) > 2:
         pii = sys.argv[2];
     # 获取未安装模块
     unInstallMods = getUninstalledMods(pyExe);
     # 安装未安装模块
-    if len(unInstallMods) > 0:
-        upgradePip(pii);
     failedMods = installMods(pyExe, unInstallMods, pii);
     if len(failedMods) > 0:
         print(f"{pyExe} -m pip install {failedMods} failed!");

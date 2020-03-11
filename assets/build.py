@@ -9,14 +9,15 @@ def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
 
 # 获取依赖模块表
 def getDependMods():
-    modList, modFile = [], "depends.mod";
-    if not os.path.exists(modFile):
-        return modList;
-    with open(modFile, "r") as f:
-        for line in f.readlines():
-            mod = line.strip();
-            if mod not in modList:
-                modList.append(mod);
+    modList, modFileList = [], ["depends.mod", "common/depends.mod"];
+    for modFile in modFileList:
+        if not os.path.exists(modFile):
+            continue;
+        with open(modFile, "r") as f:
+            for line in f.readlines():
+                mod = line.strip();
+                if mod not in modList:
+                    modList.append(mod);
     return modList;
 
 # 初始化依赖信息文件
@@ -99,11 +100,10 @@ if __name__ == '__main__':
     # 获取未安装模块
     unInstallMods = getUninstalledMods(pyExe);
     if isCheck and len(unInstallMods) > 0:
+        upgradePip(pyExe, pjPath); # 静默升级pip
         sys.exit(2); # 有未安装模块
-    # 升级pip安装命令
-    if len(unInstallMods) > 0:
-        upgradePip(pyExe, pjPath);
     # 安装未安装模块
+    print(f"Start installing dependent modules -> {unInstallMods}...");
     failedMods = installMods(pyExe, unInstallMods, pjPath);
     if len(failedMods) > 0:
         print(f"{pyExe} -m pip install {failedMods} failed!");
