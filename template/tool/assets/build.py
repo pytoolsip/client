@@ -1,4 +1,4 @@
-import sys,os,subprocess,json;
+import sys,os,subprocess,json,re;
 
 # 无日志打印运行命令
 def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
@@ -6,6 +6,15 @@ def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
     startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
     startupinfo.wShowWindow = subprocess.SW_HIDE;
     return getattr(subprocess, funcName)(cmd, cwd = cwd, startupinfo = startupinfo, **argDict);
+
+# 分割等号
+def splitEqualSign(modstr):
+    modstr = modstr.strip();
+    if modstr.find("=") != -1:
+        if modstr.find("==") != -1:
+            return tuple(modstr.split("=="));
+        return tuple(modstr.split("="));
+    return (modstr, "");
 
 # 获取依赖模块表
 def getDependMods():
@@ -15,30 +24,33 @@ def getDependMods():
             continue;
         with open(modFile, "r") as f:
             for line in f.readlines():
-                mod = line.strip();
+                mod = splitEqualSign(line.strip());
                 if mod not in modList:
                     modList.append(mod);
     return modList;
 
 # 获取已安装模块
-def getInstalledMods(pyExe):
-    modList = [];
+def getInstalledModMap(pyExe):
+    modMap = {};
     if os.path.isfile(pyExe):
         pyExe = os.path.abspath(pyExe);
     ret = runCmd(f"{pyExe} -m pip freeze", funcName = "check_output");
     for line in ret.decode().split("\n"):
         line = line.strip();
         if line:
-            modList.append(line.split("==")[0]);
-    return modList;
+            mod = splitEqualSign(line);
+            modMap[mod[0]] = mod[1];
+    return modMap;
 
 # 获取未安装模块
 def getUninstalledMods(pyExe):
-    modList = getInstalledMods(pyExe); # 获取已安装模块
+    modMap = getInstalledModMap(pyExe); # 获取已安装模块
     unInstallMods = [];
-    for mod in getDependMods():
-        if mod not in modList:
-            unInstallMods.append(mod);
+    for mod, ver in getDependMods():
+        if mod not in modMap:
+            unInstallMods.append((mod, ver));
+        elif ver and ver != modMap[mod]:
+            print(f"Mismatched version requirements: mod[{mod}], installed[{modMap[mod]}], required[{ver}]!");
     return unInstallMods;
 
 # 安装模块
@@ -54,7 +66,9 @@ def installMods(pyExe, mods, pii = ""):
 def getPipInstallCmd(pyExe, mod, pii = ""):
     if os.path.isfile(pyExe):
         pyExe = os.path.abspath(pyExe);
-    cmd = f"{pyExe} -m pip install {mod}";
+    cmd = f"{pyExe} -m pip install {mod[0]}";
+    if mod[1]: # 安装版本号
+        cmd += f"=={mod[1]}";
     # 处理镜像
     if pii:
         cmd += f" -i {pii}";
