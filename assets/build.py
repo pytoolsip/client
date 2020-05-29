@@ -38,9 +38,28 @@ def initDependMap(pjPath):
     if not os.path.exists(filePath):
         dependMap = {};
         for mod, ver in getDependMods():
-            dependMap[mod] = 1;
+            dependMap[mod] = {
+				"ver" : ver,
+				"map" : {
+					"pytoolsip" : ver,
+				},
+			};
         with open(filePath, "w") as f:
             f.write(json.dumps(dependMap));
+
+# 获取依赖信息
+def getDependMap(pjPath):
+    filePath = os.path.join(pjPath, "data", "depend_map.json");
+    if os.path.exists(filePath):
+        with open(filePath, "rb") as f:
+            return json.loads(f.read().decode("utf-8"));
+    return {};
+    
+# 保存依赖信息
+def setDependMap(pjPath, dependMap):
+    filePath = os.path.join(pjPath, "data", "depend_map.json");
+    with open(filePath, "w") as f:
+        f.write(json.dumps(dependMap));
 
 # 获取已安装模块
 def getInstalledModMap(pyExe):
@@ -71,10 +90,29 @@ def getUninstalledMods(pyExe):
 def installMods(pyExe, mods, pjPath):
     failedMods = [];
     pii = getPipInstallImage(pjPath);
+    dependMap = getDependMap(pjPath);
     for mod in mods:
         cmd = getPipInstallCmd(pyExe, mod, pii);
-        if subprocess.call(cmd) != 0:
+        if subprocess.call(cmd) == 0:
+            m,v = mod;
+            if m not in dependMap:
+                dependMap[m] = {
+                    "ver" : v,
+                    "map" : {
+                        "pytoolsip" : v,
+                    },
+                };
+            else:
+                depend = dependMap[m];
+                depend["ver"] = v;
+                depend["map"]["pytoolsip"] = v;
+                for ver in depend["map"].values():
+                    if ver:
+                        depend["ver"] = ver;
+        else:
             failedMods.append(mod);
+    if len(mods) > 0:
+        setDependMap(pjPath, dependMap);
     return failedMods;
 
 # 获取pip安装镜像

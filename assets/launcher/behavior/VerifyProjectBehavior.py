@@ -63,8 +63,8 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 				moduleMap = json.loads(f.read().decode("utf-8", "ignore"));
 				# 校验模块
 				installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("g_PythonPath"));
-				for modName,count in moduleMap.items():
-					if count > 0:
+				for modName,depend in moduleMap.items():
+					if depend["map"]:
 						if modName not in installedPkgDict:
 							modNameList.append(modName);
 					else:
