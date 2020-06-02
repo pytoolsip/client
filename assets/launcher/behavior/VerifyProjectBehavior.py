@@ -64,12 +64,12 @@ class VerifyProjectBehavior(_GG("BaseBehavior")):
 				# 校验模块
 				installedPkgDict = obj.getInstalledPackagesByPip(pythonPath = _GG("g_PythonPath"));
 				for modName,depend in moduleMap.items():
-					if depend["map"]:
-						if modName not in installedPkgDict:
-							modNameList.append(modName);
+					if isinstance(depend, dict) and not depend["map"]:
+						if modName in installedPkgDict:
+							uninstallNameList.append(modName);
 					else:
 						if modName not in installedPkgDict:
-							uninstallNameList.append(modName);
+							modNameList.append(modName);
 			if len(modNameList) == 0:
 				if len(uninstallNameList) > 0:
 					wx.CallAfter(self.showUninstallModMsgDialog, obj, uninstallNameList);

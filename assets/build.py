@@ -29,24 +29,6 @@ def getDependMods():
                     modList.append(mod);
     return modList;
 
-# 初始化依赖信息文件
-def initDependMap(pjPath):
-    dirPath = os.path.join(pjPath, "data");
-    filePath = os.path.join(dirPath, "depend_map.json");
-    if not os.path.exists(dirPath):
-        os.makedirs(dirPath);
-    if not os.path.exists(filePath):
-        dependMap = {};
-        for mod, ver in getDependMods():
-            dependMap[mod] = {
-				"ver" : ver,
-				"map" : {
-					"pytoolsip" : ver,
-				},
-			};
-        with open(filePath, "w") as f:
-            f.write(json.dumps(dependMap));
-
 # 获取依赖信息
 def getDependMap(pjPath):
     filePath = os.path.join(pjPath, "data", "depend_map.json");
@@ -60,6 +42,32 @@ def setDependMap(pjPath, dependMap):
     filePath = os.path.join(pjPath, "data", "depend_map.json");
     with open(filePath, "w") as f:
         f.write(json.dumps(dependMap));
+
+# 校验依赖信息
+def verifyDependMap(pjPath):
+    dependMap = getDependMap(pjPath);
+    if not dependMap:
+        return False;
+    for mod,depend in dependMap.items():
+        if not isinstance(depend, dict):
+            return False;
+    return True;
+
+# 初始化依赖信息文件
+def initDependMap(pjPath):
+    dirPath = os.path.join(pjPath, "data");
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath);
+    if not verifyDependMap(pjPath):
+        dependMap = {};
+        for mod, ver in getDependMods():
+            dependMap[mod] = {
+                "ver" : ver,
+                "map" : {
+                    "pytoolsip" : ver,
+                },
+            };
+        setDependMap(pjPath, dependMap);
 
 # 获取已安装模块
 def getInstalledModMap(pyExe):
