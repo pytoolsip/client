@@ -22,11 +22,14 @@ def getFile(assetsPath, name):
     return f"{name}.py";
 
 # 运行pytoolsip程序
-def runExeByPath(cwd):
+def runExeByPath(cwd, isShowLog=False):
     exeName = "pytoolsip.exe";
-    ptipPath =os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
+    ptipPath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
     if os.path.exists(os.path.join(ptipPath, exeName)):
-        runCmd(" ".join([exeName, cwd]), cwd = ptipPath);
+        if isShowLog:
+            runCmd(" ".join([exeName, "-log", cwd]), cwd = ptipPath);
+        else:
+            runCmd(" ".join([exeName, cwd]), cwd = ptipPath);
         return True;
     return False;
 
@@ -41,13 +44,22 @@ def getDependPath(cwd, path):
                 return dependPath;
     return os.path.abspath(os.path.join(cwd, path));
 
+# 检测是否显示日志窗口
+def checkIsShowLog(sysArgv):
+    if len(sysArgv) >= 2:
+        if sysArgv[1] == "-log":
+            return True;
+    return False;
+
+
 if __name__ == '__main__':
     cwd = os.getcwd();
-    if not runExeByPath(cwd):
+    isShowLog = checkIsShowLog(sys.argv);
+    if not runExeByPath(cwd, isShowLog = isShowLog):
         # 获取工程路径
-        if len(sys.argv) >= 2:
-            if os.path.exists(sys.argv[1]):
-                cwd = sys.argv[1];
+        if len(sys.argv) >= 3:
+            if os.path.exists(sys.argv[2]):
+                cwd = sys.argv[2];
         # 获取python依赖路径
         pyExe = os.path.abspath(getDependPath(cwd, "include/python/python.exe"));
         # 获取资源路径
@@ -55,4 +67,5 @@ if __name__ == '__main__':
         # 运行start.bat文件
         runPath = os.path.abspath(getDependPath(cwd, "run"));
         startBat = os.path.join(runPath, "start.bat");
-        runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), cwd, runPath]));
+        showLog = "1" if isShowLog else "0";
+        runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), cwd, runPath, showLog]));

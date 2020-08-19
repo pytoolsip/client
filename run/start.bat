@@ -6,5 +6,6 @@ set buildfile=%3
 set mainfile=%4
 set pjpath=%5
 set runpath=%6
+set showlog=%7
 
-start /d %runpath% buildAndRun.vbs %pyexe% %assetspath% %buildfile% %mainfile% %pjpath%
+start /d %runpath% buildAndRun.vbs %pyexe% %assetspath% %buildfile% %mainfile% %pjpath% %showlog%

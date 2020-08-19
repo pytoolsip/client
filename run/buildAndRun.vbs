@@ -10,6 +10,7 @@ assetspath = " " + WScript.Arguments(1)
 buildfile = " " + WScript.Arguments(2)
 mainfile = " " + WScript.Arguments(3)
 pjpath = " " + WScript.Arguments(4)
+showlog = " " + WScript.Arguments(5)
 
 ' 获取Wscript脚本对象
 Set ws = CreateObject("Wscript.Shell")
@@ -24,4 +25,4 @@ End If
 ' 启动运行程序
 Dim args2
 args2 = pyexe+assetspath+mainfile+pjpath
-ws.run "cmd /c run.bat"+args2,0
+ws.run "cmd /c run.bat"+args2, showlog
