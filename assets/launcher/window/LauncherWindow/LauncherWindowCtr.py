@@ -219,7 +219,8 @@ class LauncherWindowCtr(object):
 				# "failCallback" : self.showInstallModMsgDialog,
 			},
 		});
-		self.addLauncherEvent({
-			"scheduleTask" : self.getUI().verifyIPVersion,
-			"text" : "正在校验平台版本",
-		});
+		if int(_GG("ClientConfig").Config().Get("isverify", "ipversion", 1)) > 0:
+			self.addLauncherEvent({
+				"scheduleTask" : self.getUI().verifyIPVersion,
+				"text" : "正在校验平台版本",
+			});
