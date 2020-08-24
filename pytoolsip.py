@@ -29,7 +29,7 @@ def runExeByPath(cwd, isShowLog=False):
         if isShowLog:
             runCmd(" ".join([exeName, "-log", cwd]), cwd = ptipPath);
         else:
-            runCmd(" ".join([exeName, cwd]), cwd = ptipPath);
+            runCmd(" ".join([exeName, "-nolog", cwd]), cwd = ptipPath);
         return True;
     return False;
 
