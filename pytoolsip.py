@@ -51,15 +51,21 @@ def checkIsShowLog(sysArgv):
             return True;
     return False;
 
+# 获取工程路径
+def getCwd(sysArgv, cwd=os.getcwd()):
+    if len(sysArgv) > 1:
+        for i in range(1, len(sysArgv)):
+            if os.path.isdir(sysArgv[i]) and os.path.exists(sysArgv[i]):
+                return sysArgv[i];
+    return cwd;
+
 
 if __name__ == '__main__':
     cwd = os.getcwd();
     isShowLog = checkIsShowLog(sys.argv);
     if not runExeByPath(cwd, isShowLog = isShowLog):
         # 获取工程路径
-        if len(sys.argv) >= 3:
-            if os.path.exists(sys.argv[2]):
-                cwd = sys.argv[2];
+        cwd = getCwd(sys.argv, cwd=cwd);
         # 获取python依赖路径
         pyExe = os.path.abspath(getDependPath(cwd, "include/python/python.exe"));
         # 获取资源路径
