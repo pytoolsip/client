@@ -5,6 +5,10 @@
 # @Last Modified time: 2020-02-03 17:00:25
 
 import sys,os,re,subprocess;
+import time;
+
+# 启动日志文件名
+LOG_FILE_NAME = "log.txt";
 
 # 无日志打印运行命令
 def runCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
@@ -25,11 +29,12 @@ def getFile(assetsPath, name):
 def runExeByPath(cwd, isShowLog=False):
     exeName = "pytoolsip.exe";
     ptipPath = os.path.abspath(os.path.join(cwd, "data", "update", "pytoolsip"));
-    if os.path.exists(os.path.join(ptipPath, exeName)):
+    exePath = os.path.join(ptipPath, exeName);
+    if os.path.exists(exePath):
         if isShowLog:
-            runCmd(" ".join([exeName, "-log", cwd]), cwd = ptipPath);
+            runCmd(" ".join([exePath, "-log", cwd]), cwd = ptipPath);
         else:
-            runCmd(" ".join([exeName, "-nolog", cwd]), cwd = ptipPath);
+            runCmd(" ".join([exePath, "-nolog", cwd]), cwd = ptipPath);
         return True;
     return False;
 
@@ -59,10 +64,27 @@ def getCwd(sysArgv, cwd=os.getcwd()):
                 return sysArgv[i];
     return cwd;
 
+# 清空日志
+def clearLog():
+    with open(LOG_FILE_NAME, "w") as f:
+        f.truncate();
+        f.close();
+
+# 写入日志
+def writeLog(content):
+    time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()));
+    with open(LOG_FILE_NAME, "a+") as f:
+        f.write(f"{time_str} - Log: {content}\n");
+        f.close();
+
 
 if __name__ == '__main__':
+    # 清空日志
+    clearLog();
+    # 启动参数
     cwd = os.getcwd();
     isShowLog = checkIsShowLog(sys.argv);
+    writeLog(f"Start up params -> cwd:{cwd}; sys.argv:{sys.argv}; isShowLog:{isShowLog}");
     if not runExeByPath(cwd, isShowLog = isShowLog):
         # 获取工程路径
         cwd = getCwd(sys.argv, cwd=cwd);
@@ -74,4 +96,5 @@ if __name__ == '__main__':
         runPath = os.path.abspath(getDependPath(cwd, "run"));
         startBat = os.path.join(runPath, "start.bat");
         showLog = "1" if isShowLog else "0";
+        writeLog(f"Start up runCmd -> startBat:{startBat}; pyExe:{pyExe}; assetsPath:{assetsPath}; cwd:{cwd}; runPath:{runPath}; showLog:{showLog}");
         runCmd(" ".join([startBat, pyExe, assetsPath, getFile(assetsPath, "build"), getFile(assetsPath, "main"), cwd, runPath, showLog]));

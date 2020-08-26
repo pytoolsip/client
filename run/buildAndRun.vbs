@@ -1,6 +1,7 @@
 ' 校验参数个数
 if WScript.Arguments.Count < 5 Then
-    MsgBox "Error Arguments!"
+    MsgBox "Error: Not Enought Arguments!"
+    WScript.quit(1)
 End If
 
 ' 获取参数
@@ -10,7 +11,10 @@ assetspath = " " + WScript.Arguments(1)
 buildfile = " " + WScript.Arguments(2)
 mainfile = " " + WScript.Arguments(3)
 pjpath = " " + WScript.Arguments(4)
-showlog = " " + WScript.Arguments(5)
+showlog = "0"
+if WScript.Arguments.Count > 5 Then
+    showlog = WScript.Arguments(5)
+End If
 
 ' 获取Wscript脚本对象
 Set ws = CreateObject("Wscript.Shell")
