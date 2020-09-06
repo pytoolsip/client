@@ -32,7 +32,8 @@ class TemplateDialogUI(wx.Dialog):
 		for k,v in params.items():
 			self.__params[k] = v;
 
-	def getCtr(self):
+	@property
+	def Ctr(self):
 		return self.__viewCtr;
 
 	def initDialog(self):
@@ -41,7 +42,7 @@ class TemplateDialogUI(wx.Dialog):
 		self.updatePosition(); # 更新位置
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
+		# self.Ctr.createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
 		pass;
 		
 	def initDialogLayout(self):

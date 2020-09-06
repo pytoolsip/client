@@ -52,7 +52,8 @@ class TemplateWindowCtr(object):
 		self.__ui = TemplateWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
 		self.__ui.initWindow();
 
-	def getUI(self):
+	@property
+	def UI(self):
 		return self.__ui;
 		
 	"""
@@ -63,7 +64,7 @@ class TemplateWindowCtr(object):
 	"""
 	def createCtrByKey(self, key, path, parent = None, params = {}):
 		if not parent:
-			parent = self.getUI();
+			parent = self.UI;
 		self.__CtrMap[key] = CreateCtr(path, parent, params = params);
 
 	def getCtrByKey(self, key):
@@ -72,7 +73,9 @@ class TemplateWindowCtr(object):
 	def getUIByKey(self, key):
 		ctr = self.getCtrByKey(key);
 		if ctr:
-			return ctr.getUI();
+			if hasattr(ctr, "getUI"):
+				return ctr.getUI();
+			return ctr.UI;
 		return None;
 		
 	def registerEventMap(self):

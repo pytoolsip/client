@@ -17,7 +17,8 @@ class TemplateWindowUI(wx.Frame):
 		self._curPath = curPath;
 		self.__windowCtr = windowCtr;
 
-	def getCtr(self):
+	@property
+	def Ctr(self):
 		return self.__windowCtr;
 
 	def initWindow(self):
@@ -28,7 +29,7 @@ class TemplateWindowUI(wx.Frame):
 		pass;
 
 	def createViewCtrs(self):
-		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
+		# self.Ctr.createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		pass;
 
 	def initWindowLayout(self):

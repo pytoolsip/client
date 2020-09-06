@@ -28,7 +28,8 @@ class TemplateViewUI(wx.Panel):
 		for k,v in params.items():
 			self.__params[k] = v;
 
-	def getCtr(self):
+	@property
+	def Ctr(self):
 		return self.__viewCtr;
 
 	def initView(self):
@@ -36,7 +37,7 @@ class TemplateViewUI(wx.Panel):
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
+		# self.Ctr.createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):

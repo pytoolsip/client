@@ -49,7 +49,8 @@ class TemplateViewCtr(object):
 		self.__ui = TemplateViewUI(parent, curPath = self._curPath, viewCtr = self, params = params);
 		self.__ui.initView();
 
-	def getUI(self):
+	@property
+	def UI(self):
 		return self.__ui;
 
 	"""
@@ -60,7 +61,7 @@ class TemplateViewCtr(object):
 	"""
 	def createCtrByKey(self, key, path, parent = None, params = {}):
 		if not parent:
-			parent = self.getUI();
+			parent = self.UI;
 		self.__CtrMap[key] = CreateCtr(path, parent, params = params);
 
 	def getCtrByKey(self, key):
@@ -69,7 +70,9 @@ class TemplateViewCtr(object):
 	def getUIByKey(self, key):
 		ctr = self.getCtrByKey(key);
 		if ctr:
-			return ctr.getUI();
+			if hasattr(ctr, "getUI"):
+				return ctr.getUI();
+			return ctr.UI;
 		return None;
 		
 	def registerEventMap(self):

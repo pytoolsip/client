@@ -13,7 +13,7 @@ class MainViewUI(wx.ScrolledWindow):
 	"""docstring for MainViewUI"""
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
-		super(MainViewUI, self).__init__(parent, id, size = self.__params["size"]);
+		super(MainViewUI, self).__init__(parent, id, size = self.__params["size"], style = self.__params["style"]);
 		self._className_ = MainViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
